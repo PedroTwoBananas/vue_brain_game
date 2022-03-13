@@ -2,6 +2,14 @@
    <router-view />
 </template>
 
-<script></script>
+<script>
+export default {
+   computed: {
+      storeGameConfigs() {
+         return this.$store.getters.storeGameConfigs
+      },
+   },
+}
+</script>
 
 <style></style>
