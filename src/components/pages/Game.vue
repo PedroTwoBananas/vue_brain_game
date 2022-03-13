@@ -1,6 +1,16 @@
 <template>
-   <div>
-      <h1>game</h1>
+   <div class="expression">
+      <div v-for="sign in generator()">
+         <span
+            v-if="
+               (!sign.hidden && sign.type === 'number') ||
+               sign.type === 'operator'
+            "
+            >{{ sign.value }}</span
+         >
+         <input class='sign-input' v-if="sign.hidden" />
+         <span v-if="sign.type === 'total'">= {{ sign.value }}</span>
+      </div>
    </div>
 </template>
 
@@ -9,6 +19,7 @@ import { useStore } from 'vuex'
 
 export default {
    setup() {
+
       const store = useStore()
 
       const configs = store.state.configs
@@ -19,37 +30,63 @@ export default {
          return Math.floor(rand)
       }
 
-      const getRandomBoolean = () => {
-         return Math.random() >= 0.5
-      }
-
       const generator = () => {
          const difficulty = +configs.difficulty
 
-         const count = difficulty + 1
-
          const operators = configs.selectedOperators
 
-         const example = []
+         const expression = []
 
-         for (let i = 0; i < count; i++) {
-            example.push({
+         expression.push({
+            type: 'number',
+            value: getRandomInt(1, 5),
+            hidden: false,
+         })
+
+         expression.push({
+            type: 'operator',
+            value: operators[getRandomInt(0, operators.length - 1)],
+         })
+
+         for (let i = 0; i < difficulty; i++) {
+            expression.push({
                type: 'number',
                value: getRandomInt(1, 5),
-               hidden: false,
+               hidden: true,
             })
 
-            if (i !== count - 1) {
-               example.push({
+            if (i !== difficulty - 1) {
+               expression.push({
                   type: 'operator',
                   value: operators[getRandomInt(0, operators.length - 1)],
                })
             }
          }
+
+         const fullExpression = expression
+            .map((elem) => elem.value.toString())
+            .join('')
+         expression.push({
+            type: 'total',
+            value: eval(fullExpression),
+         })
+
+         return expression
       }
       return { generator }
    },
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.expression {
+   display: flex;
+   flex-direction: row;
+   gap: 6px;
+   align-content: center;
+}
+
+.sign-input {
+   width: 25px;
+}
+</style>

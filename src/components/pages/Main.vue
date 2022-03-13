@@ -12,9 +12,9 @@
          <div>
             <input
                type="range"
-               min=1
-               max=10
-               step=1
+               min="1"
+               max="10"
+               step="1"
                v-model="configs.time"
             />
             <span>Длительность {{ configs.time }} минут</span>
@@ -22,16 +22,15 @@
          <div>
             <input
                type="range"
-               min=1
-               max=10
-               step=1
+               min="1"
+               max="10"
+               step="1"
                v-model="configs.difficulty"
             />
             <span>Сложность {{ configs.difficulty }}</span>
          </div>
       </div>
       <div>
-         {{ configs.selectedOperators }}
          <div v-for="operator in operators" :key="operator.id">
             <input
                type="checkbox"
