@@ -65,7 +65,7 @@ export default {
             id: 5,
             isChecked: false,
             name: 'Возведение в степень',
-            sign: '^',
+            sign: '**',
          },
       ])
 
