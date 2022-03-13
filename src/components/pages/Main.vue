@@ -70,8 +70,8 @@ export default {
       ])
 
       const configs = ref({
-         difficulty: 5,
-         time: 5,
+         difficulty: '5',
+         time: '5',
          selectedOperators: [],
       })
 
