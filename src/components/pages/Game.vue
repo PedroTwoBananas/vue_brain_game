@@ -11,7 +11,7 @@
                v-model="sign.value"
                v-if="sign.hidden"
             />
-            <span v-if="sign.type === 'total'">= {{ sign.value }}</span>
+            <span v-if="sign.type === 'total'">= {{ sign.value }}?</span>
          </div>
       </div>
       <button @click="showExpression">Показать выражение</button>
@@ -22,6 +22,9 @@
 <script>
 import { useStore } from 'vuex'
 import { ref } from 'vue'
+import { generate } from '@/components/functions/generate'
+import { createInputExpression } from '@/components/functions/createInputExpression'
+import { getLeftIdentity } from '@/components/functions/getLeftIdentity'
 
 export default {
    setup() {
@@ -29,79 +32,19 @@ export default {
 
       const configs = store.state.configs
 
-      const getRandomInt = (min, max) => {
-         const rand = min + Math.random() * (max + 1 - min)
-
-         return Math.floor(rand)
-      }
-
-      const generate = () => {
-         const difficulty = +configs.difficulty
-
-         const operators = configs.selectedOperators
-
-         const expression = []
-
-         expression.push({
-            type: 'number',
-            value: getRandomInt(1, 5),
-            hidden: false,
-         })
-
-         expression.push({
-            type: 'operator',
-            value: operators[getRandomInt(0, operators.length - 1)],
-         })
-
-         for (let i = 0; i < difficulty; i++) {
-            expression.push({
-               type: 'number',
-               value: getRandomInt(1, 5),
-               hidden: true,
-            })
-
-            if (i !== difficulty - 1) {
-               expression.push({
-                  type: 'operator',
-                  value: operators[getRandomInt(0, operators.length - 1)],
-               })
-            }
-         }
-
-         const fullExpression = expression
-            .map((elem) => elem.value.toString())
-            .join('')
-         expression.push({
-            type: 'total',
-            value: eval(fullExpression),
-         })
-
-         return expression
-      }
-
       const data = ref({
-         generatedExpression: generate(),
-         inputExpression: [],
+         generatedExpression: generate(configs),
+         inputExpression: null,
       })
 
-      data.value.inputExpression = data.value.generatedExpression.map(
-         (sign) => {
-            if (sign.hidden && sign.type === 'number') {
-               const newSign = { ...sign }
-               newSign.value = null
-               return newSign
-            }
-            return sign
-         }
+      data.value.inputExpression = createInputExpression(
+         data.value.generatedExpression
       )
 
       const showExpression = () => {
-         const exp = data.value.generatedExpression
-            .filter((elem) => elem.type !== 'total')
-            .map((elem) => elem.value.toString())
-            .join('')
+         const leftIdentity = getLeftIdentity(data.value.generatedExpression)
 
-         return alert(exp)
+         return alert(leftIdentity)
       }
 
       const checkSolution = () => {
@@ -109,29 +52,18 @@ export default {
             (sign) => sign.type === 'total'
          ).value
 
-         const leftIdentity = data.value.inputExpression
-            .filter((elem) => elem.type !== 'total')
-            .map((elem) => elem.value.toString())
-            .join('')
+         const leftIdentity = getLeftIdentity(data.value.inputExpression)
 
          const rightIdentity = eval(leftIdentity)
 
          rightIdentity === solution ? alert('Молодец!') : alert('Болван!')
 
-         data.value.generatedExpression = generate()
+         data.value.generatedExpression = generate(configs)
 
-         data.value.inputExpression = data.value.generatedExpression.map(
-            (sign) => {
-               if (sign.hidden && sign.type === 'number') {
-                  const newSign = { ...sign }
-                  newSign.value = null
-                  return newSign
-               }
-               return sign
-            }
+         data.value.inputExpression = createInputExpression(
+            data.value.generatedExpression
          )
       }
-
       return { data, checkSolution, showExpression }
    },
 }
