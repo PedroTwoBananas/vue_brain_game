@@ -16,21 +16,56 @@
       </div>
       <button @click="showExpression">Показать выражение</button>
       <button @click="checkSolution">Проверить</button>
+      <button @click="goToMain">Отмена</button>
+      <div>
+         <h1>{{ convertToString(countDownTime) }}</h1>
+      </div>
    </div>
 </template>
 
 <script>
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 import { generate } from '@/components/functions/generate'
 import { createInputExpression } from '@/components/functions/createInputExpression'
 import { getLeftIdentity } from '@/components/functions/getLeftIdentity'
+import { convertToString } from '@/components/functions/convertToString'
 
 export default {
    setup() {
       const store = useStore()
+      const router = useRouter()
+
+      const goToMain = () => {
+         return router.push({ name: 'main' })
+      }
 
       const configs = store.state.configs
+
+      let countDownTime = ref(+configs.time * 60)
+
+      let timer
+
+      const startTimer = () => {
+         timer = setInterval(runTimer, 1000)
+      }
+
+      const stopTimer = () => {
+         if (timer) {
+            clearInterval(timer)
+         }
+      }
+
+      const runTimer = () => {
+         countDownTime.value -= 1
+
+         if (countDownTime.value === 0) {
+            stopTimer()
+         }
+      }
+
+      startTimer()
 
       const data = ref({
          generatedExpression: generate(configs),
@@ -64,7 +99,14 @@ export default {
             data.value.generatedExpression
          )
       }
-      return { data, checkSolution, showExpression }
+      return {
+         countDownTime,
+         data,
+         checkSolution,
+         showExpression,
+         goToMain,
+         convertToString,
+      }
    },
 }
 </script>
