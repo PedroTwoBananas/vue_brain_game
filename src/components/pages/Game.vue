@@ -6,6 +6,8 @@
                sign.value
             }}</span>
             <input
+               class="sign-input"
+               @click="() => (currentInput = sign.id)"
                :id="sign.id"
                type="number"
                :ref="
@@ -25,13 +27,13 @@
       </div>
       <div>
          <div>
-            <button v-for="key in keys" :key="key">
+            <button v-for="key in keys" :key="key" @click="clickNumButton(key)">
                {{ key }}
             </button>
          </div>
          <div>
-            <button @click.prevent="prevInput">назад</button>
-            <button @click.prevent="nextInput">вперёд</button>
+            <button @click="prevInput">назад</button>
+            <button @click="nextInput">вперёд</button>
             <button @click="showExpression">?</button>
             <button @click="checkSolution">=</button>
          </div>
@@ -121,9 +123,18 @@ export default {
          focusInput()
       }
 
+      const clickNumButton = (num) => {
+         data.value.inputExpression.map((sign) => {
+            if (sign.id === currentInput.value) {
+               sign.value = sign.value + '' + num
+            }
+         })
+         focusInput()
+      }
+
       const showExpression = () => {
          const leftIdentity = getLeftIdentity(data.value.generatedExpression)
-
+         focusInput()
          return alert(leftIdentity)
       }
 
@@ -135,7 +146,6 @@ export default {
          const leftIdentity = getLeftIdentity(data.value.inputExpression)
 
          const rightIdentity = eval(leftIdentity)
-
          rightIdentity === solution ? alert('Молодец!') : alert('Болван!')
 
          data.value.generatedExpression = generate(configs)
@@ -143,6 +153,8 @@ export default {
          data.value.inputExpression = createInputExpression(
             data.value.generatedExpression
          )
+         currentInput.value = 1
+         focusInput()
       }
       return {
          currentInput,
@@ -150,6 +162,7 @@ export default {
          prevInput,
          nextInput,
          keys,
+         clickNumButton,
          countDownTime,
          data,
          checkSolution,
@@ -171,6 +184,11 @@ export default {
 
 .sign-input {
    width: 25px;
+}
+
+.sign-input::-webkit-inner-spin-button,
+.sign-input::-webkit-outer-spin-button {
+   -webkit-appearance: none;
 }
 
 .active-sign-input {
