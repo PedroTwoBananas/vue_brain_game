@@ -6,19 +6,35 @@
                sign.value
             }}</span>
             <input
+               :id="sign.id"
                type="number"
-               class="sign-input"
+               :ref="
+                  (el) => {
+                     if (el) inputs[sign.id - 1] = el
+                  }
+               "
                v-model="sign.value"
                v-if="sign.hidden"
             />
             <span v-if="sign.type === 'total'">= {{ sign.value }}?</span>
          </div>
       </div>
-      <button @click="showExpression">Показать выражение</button>
-      <button @click="checkSolution">Проверить</button>
       <button @click="goToMain">Отмена</button>
       <div>
          <h1>{{ convertToString(countDownTime) }}</h1>
+      </div>
+      <div>
+         <div>
+            <button v-for="key in keys" :key="key">
+               {{ key }}
+            </button>
+         </div>
+         <div>
+            <button @click.prevent="prevInput">назад</button>
+            <button @click.prevent="nextInput">вперёд</button>
+            <button @click="showExpression">?</button>
+            <button @click="checkSolution">=</button>
+         </div>
       </div>
    </div>
 </template>
@@ -27,6 +43,7 @@
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+import { onMounted } from 'vue'
 import { generate } from '@/components/functions/generate'
 import { createInputExpression } from '@/components/functions/createInputExpression'
 import { getLeftIdentity } from '@/components/functions/getLeftIdentity'
@@ -40,6 +57,8 @@ export default {
       const goToMain = () => {
          return router.push({ name: 'main' })
       }
+
+      const keys = [...Array(10).keys()]
 
       const configs = store.state.configs
 
@@ -76,6 +95,32 @@ export default {
          data.value.generatedExpression
       )
 
+      let currentInput = ref(1)
+
+      let inputs = ref([])
+
+      const focusInput = () => {
+         inputs.value.map((input) => {
+            if (input.id == currentInput.value) {
+               input.focus()
+            }
+         })
+      }
+
+      onMounted(() => focusInput())
+
+      const prevInput = () => {
+         if (currentInput.value > 1) currentInput.value--
+         focusInput()
+      }
+
+      const nextInput = () => {
+         if (currentInput.value < configs.difficulty) {
+            currentInput.value++
+         }
+         focusInput()
+      }
+
       const showExpression = () => {
          const leftIdentity = getLeftIdentity(data.value.generatedExpression)
 
@@ -100,6 +145,11 @@ export default {
          )
       }
       return {
+         currentInput,
+         inputs,
+         prevInput,
+         nextInput,
+         keys,
          countDownTime,
          data,
          checkSolution,
@@ -121,5 +171,10 @@ export default {
 
 .sign-input {
    width: 25px;
+}
+
+.active-sign-input {
+   width: 25px;
+   background-color: greenyellow;
 }
 </style>

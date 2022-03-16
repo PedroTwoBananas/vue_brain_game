@@ -27,6 +27,7 @@ export const generate = (configs) => {
          type: 'number',
          value: getRandomInt(1, 5),
          hidden: true,
+         id: i + 1,
       })
 
       if (i !== difficulty - 1) {
