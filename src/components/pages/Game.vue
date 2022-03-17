@@ -34,10 +34,19 @@
          <div>
             <button @click="prevInput">назад</button>
             <button @click="nextInput">вперёд</button>
-            <button @click="showExpression">?</button>
+            <button @click="toggleExpression">?</button>
             <button @click="checkSolution">=</button>
          </div>
       </div>
+      <teleport to='body' v-if='show.showLeftIdentity'>
+         <Modal @ok='toggleExpression' :info='getLeftIdentity(data.generatedExpression)' />
+      </teleport>
+      <teleport to='body' v-if='show.showSolution'>
+         <Modal :info='`Ответ верный` || `Ответ неверный`'/>
+      </teleport>
+<!--      <teleport to='body' v-if='show'>-->
+<!--         <Modal/>-->
+<!--      </teleport>-->
    </div>
 </template>
 
@@ -50,8 +59,10 @@ import { generate } from '@/components/functions/generate'
 import { createInputExpression } from '@/components/functions/createInputExpression'
 import { getLeftIdentity } from '@/components/functions/getLeftIdentity'
 import { convertToString } from '@/components/functions/convertToString'
+import Modal from '@/components/Modal'
 
 export default {
+   components: { Modal },
    setup() {
       const store = useStore()
       const router = useRouter()
@@ -59,6 +70,12 @@ export default {
       const goToMain = () => {
          return router.push({ name: 'main' })
       }
+
+      const show = ref({
+         showLeftIdentity: false,
+         showSolution: false,
+
+      })
 
       const keys = [...Array(10).keys()]
 
@@ -123,6 +140,11 @@ export default {
          focusInput()
       }
 
+      addEventListener('keydown', (e) => {
+         if (e.keyCode === 37) return prevInput()
+         else if (e.keyCode === 39) return nextInput()
+      })
+
       const clickNumButton = (num) => {
          data.value.inputExpression.map((sign) => {
             if (sign.id === currentInput.value) {
@@ -132,10 +154,9 @@ export default {
          focusInput()
       }
 
-      const showExpression = () => {
-         const leftIdentity = getLeftIdentity(data.value.generatedExpression)
+      const toggleExpression = () => {
+         show.value.showLeftIdentity = !show.value.showLeftIdentity
          focusInput()
-         return alert(leftIdentity)
       }
 
       const checkSolution = () => {
@@ -157,6 +178,7 @@ export default {
          focusInput()
       }
       return {
+         show,
          currentInput,
          inputs,
          prevInput,
@@ -165,8 +187,9 @@ export default {
          clickNumButton,
          countDownTime,
          data,
+         getLeftIdentity,
+         toggleExpression,
          checkSolution,
-         showExpression,
          goToMain,
          convertToString,
       }
