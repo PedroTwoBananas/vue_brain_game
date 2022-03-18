@@ -11,8 +11,15 @@
          <button @click="showModalExpression">?</button>
          <button @click="checkSolution">=</button>
       </div>
-      <teleport to="body" v-if="showExpression">
-         <Modal :info='leftIdentity' @ok="closeModalExpression" />
+      <teleport to="body" v-if="show.showExpression">
+         <Modal @ok="closeModalExpression">
+            {{leftIdentity}}
+         </Modal>
+      </teleport>
+      <teleport to="body" v-if="show.showSolution">
+         <Modal @ok="closeCheckSolution">
+            {{isSolved ? "Правильно" : 'Неправильно'}}
+         </Modal>
       </teleport>
    </div>
 </template>
@@ -20,7 +27,7 @@
 <script>
 import Modal from '@/components/Modal.vue'
 import { useStore } from 'vuex'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export default {
    props: {
@@ -35,13 +42,16 @@ export default {
    setup(props, context) {
       const store = useStore()
 
-      const leftIdentity = ref(store.state.leftIdentity)
+      const leftIdentity = computed(() => store.state.leftIdentity)
+
+      const isSolved = computed(() => store.state.generatedExpression.isSolved)
 
       const keys = [...Array(10).keys()]
 
-      let showExpression = ref(false)
-
-      let showSolution = ref(false)
+      const show = ref({
+         showExpression: false,
+         showSolution: false
+      })
 
       const clickNum = (num) => {
          store.dispatch('clickNum', num)
@@ -50,26 +60,32 @@ export default {
       const showModalExpression = () => {
          context.emit('toggleTimer')
 
-         showExpression.value = !showExpression.value
+         show.value.showExpression = !show.value.showExpression
 
          store.dispatch('showLeftIdentity')
       }
 
       const closeModalExpression = () => {
          context.emit('toggleTimer')
-         showExpression.value = !showExpression.value
+
+         show.value.showExpression = !show.value.showExpression
       }
 
       const checkSolution = () => {
+
          context.emit('toggleTimer')
-         showSolution.value = !showSolution.value
+
          store.dispatch('CHECK_SOLUTION')
-         store.dispatch('generateExpressions')
+
+         show.value.showSolution = !show.value.showSolution
       }
 
       const closeCheckSolution = () => {
          context.emit('toggleTimer')
-         showSolution.value = !showSolution.value
+
+         show.value.showSolution = !show.value.showSolution
+
+         store.dispatch('generateExpressions')
       }
 
       const prevInput = () => {
@@ -83,15 +99,15 @@ export default {
       return {
          keys,
          clickNum,
-         checkSolution,
          prevInput,
          nextInput,
-         showExpression,
-         showSolution,
+         show,
          showModalExpression,
          closeModalExpression,
+         checkSolution,
          closeCheckSolution,
-         leftIdentity
+         leftIdentity,
+         isSolved,
       }
    },
 }

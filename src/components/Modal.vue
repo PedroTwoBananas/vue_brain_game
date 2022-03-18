@@ -1,7 +1,7 @@
 <template>
    <div class="modal">
       <div class="modal-content">
-         <span></span>
+         <slot></slot>
          <div class="button-block">
             <button @click="$emit('ok')">ОК</button>
          </div>
@@ -10,13 +10,7 @@
 </template>
 
 <script>
-
-export default {
-
-   setup(props) {
-
-   },
-}
+export default {}
 </script>
 
 <style scoped>

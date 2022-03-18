@@ -41,6 +41,9 @@
          </div>
       </div>
       <button @click="playGame">Play!</button>
+      <teleport to="body" v-if="show">
+         <Modal @ok="closeModal">Выберите минимум один оператор!</Modal>
+      </teleport>
    </div>
 </template>
 
@@ -48,12 +51,15 @@
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-
+import Modal from '@/components/Modal'
 export default {
+   components: { Modal },
    setup() {
       const store = useStore()
 
       const router = useRouter()
+
+      const show = ref(false)
 
       const operators = ref([
          { id: 1, isChecked: false, name: 'Суммирование', sign: '+' },
@@ -87,10 +93,14 @@ export default {
          if (configs.value.selectedOperators.length > 0) {
             store.dispatch('addGameConfigs', configs.value)
             router.push({ name: 'game' })
-         } else alert('Выберите минимум один оператор!')
+         } else show.value = !show.value
       }
 
-      return { operators, configs, selectOperator, playGame }
+      const closeModal = () => {
+         show.value = !show.value
+      }
+
+      return { operators, configs, selectOperator, playGame, show, closeModal }
    },
 }
 </script>

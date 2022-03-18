@@ -19,6 +19,10 @@ export default {
 
       storeInputs() {
          return this.$store.getters.storeInputs
+      },
+
+      storeExpressions() {
+        return this.$store.getters.storeExpressions
       }
    },
 }

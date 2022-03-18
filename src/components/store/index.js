@@ -10,6 +10,7 @@ export const store = createStore({
          generatedExpression: [],
          inputExpression: [],
          leftIdentity: '',
+         expressions: [],
          inputs: [],
          currentInput: 1,
       }
@@ -21,11 +22,18 @@ export const store = createStore({
       },
 
       GENERATE_EXPRESSIONS: (state) => {
-         state.generatedExpression = generate(state.configs)
+         state.generatedExpression ={
+            value: generate(state.configs),
+            isSolved: false
+         }
+
+         // state.leftIdentity = getLeftIdentity(state.generatedExpression.value)
 
          state.inputExpression = createInputExpression(
-            state.generatedExpression
+            state.generatedExpression.value
          )
+
+
       },
 
       CLICK_NUM: (state, payload) => {
@@ -39,13 +47,13 @@ export const store = createStore({
       },
 
       SHOW_LEFT_IDENTITY: (state) => {
-         state.leftIdentity = getLeftIdentity(state.generatedExpression)
+         state.leftIdentity = getLeftIdentity(state.generatedExpression.value)
 
          focusInput(state.currentInput, state.inputs)
       },
 
       CHECK_SOLUTION: (state) => {
-         const solution = state.generatedExpression.find(
+         const solution = state.generatedExpression.value.find(
             (sign) => sign.type === 'total'
          ).value
 
@@ -53,7 +61,13 @@ export const store = createStore({
 
          const rightIdentity = eval(leftIdentity)
 
-         rightIdentity === solution ? alert('Молодец!') : alert('Болван!')
+         // rightIdentity === solution ? alert('Молодец!') : alert('Болван!')
+
+         if (rightIdentity === solution) {
+            state.generatedExpression.isSolved = true
+         }
+
+         state.expressions.push(state.generatedExpression)
 
          state.currentInput = 1
 
@@ -87,6 +101,7 @@ export const store = createStore({
       storeInputExpression: (state) => state.inputExpression,
       storeInputs: (state) => state.inputs,
       storeCurrentInput: (state) => state.currentInput,
+      storeExpressions: state => state.expressions
    },
 
    actions: {
