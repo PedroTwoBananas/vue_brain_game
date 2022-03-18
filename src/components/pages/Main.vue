@@ -4,7 +4,7 @@
       <div>
          <p>
             Добро пожаловать на 24 тренировочный день. Ваш последний результат -
-            решено "заглушка" из "заглушка". Общая точность - "заглушка"%.
+            решено {{solvedExpressions}} из {{expressions.length}}. Общая точность - {{percent || 0}} %.
          </p>
       </div>
       <div>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import Modal from '@/components/Modal'
@@ -80,6 +80,14 @@ export default {
          selectedOperators: [],
       })
 
+      const expressions = computed(() => store.state.expressions)
+
+      const solvedExpressions = expressions.value.filter(
+         (expression) => expression.isSolved
+      ).length
+
+      const percent = Math.trunc((solvedExpressions * 100) / expressions.value.length)
+
       const selectOperator = (operator) => {
          operator.isChecked
             ? configs.value.selectedOperators.push(operator.sign)
@@ -100,7 +108,17 @@ export default {
          show.value = !show.value
       }
 
-      return { operators, configs, selectOperator, playGame, show, closeModal }
+      return {
+         operators,
+         configs,
+         selectOperator,
+         playGame,
+         show,
+         closeModal,
+         expressions,
+         solvedExpressions,
+         percent
+      }
    },
 }
 </script>

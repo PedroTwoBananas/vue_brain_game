@@ -27,10 +27,20 @@ import { useStore } from 'vuex'
 import {nextTick} from 'vue'
 import { onMounted, ref } from 'vue'
 import { computed } from 'vue'
+import { createInputExpression } from '@/components/functions/createInputExpression'
 
 export default {
    setup() {
       const store = useStore()
+
+
+      // console.log(smth.value)
+      // const inputExpression = ref(createInputExpression(smth.value))
+      // console.log(inputExpression.value)
+      // const smth = computed(() => store.state.generatedExpression)
+      // console.log(smth.value)
+
+
 
       const inputExpression = computed(() => store.state.inputExpression)
 
@@ -55,7 +65,7 @@ export default {
           nextTick(focus)
       })
 
-      return { inputExpression, inputs, selectInputByClick }
+      return {  inputExpression, inputs, selectInputByClick }
    },
 }
 </script>

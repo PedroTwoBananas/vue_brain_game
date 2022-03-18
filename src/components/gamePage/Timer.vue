@@ -7,8 +7,10 @@
 <script>
 
 import { convertToString } from '@/components/functions/convertToString'
-import { onBeforeUnmount, onMounted, onUpdated, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import {Timer} from '@/components/functions/timer'
 
 export default {
    props: {
@@ -17,36 +19,24 @@ export default {
          required: true
       }
    },
+   watch: {
+      isBlockedTime(newBlocked) {
+         !newBlocked && this.timer.start();
+         newBlocked && this.timer.stop();
+      }
+   },
    setup(props) {
       const store = useStore()
-      let countDownTime = ref(+store.state.configs.time * 60)
+      const router = useRouter()
+      const countDownTime = ref(+store.state.configs.time * 60);
 
-      let timer
+      let timer = new Timer(countDownTime);
 
-      const startTimer = () => {
-         timer = setInterval(tickTimer, 1000)
-      }
-
-      const stopTimer = () => {
-         if (timer) {
-            clearInterval(timer)
-         }
-      }
-
-      const tickTimer = () => {
-         console.log('tick')
-         if (!props.isBlockedTime) countDownTime.value -= 1
-
-         if (countDownTime.value === 0) {
-            stopTimer()
-         }
-      }
-
-      onMounted(() => startTimer())
-      onBeforeUnmount(() => stopTimer())
+      onMounted(() => timer.start())
+      onBeforeUnmount(() => timer.stop())
 
 
-      return { countDownTime, convertToString }
+      return { timer, countDownTime, convertToString }
    },
 }
 </script>

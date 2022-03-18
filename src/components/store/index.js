@@ -8,9 +8,9 @@ export const store = createStore({
       return {
          configs: null,
          generatedExpression: [],
+         expressions: [],
          inputExpression: [],
          leftIdentity: '',
-         expressions: [],
          inputs: [],
          currentInput: 1,
       }
@@ -23,17 +23,14 @@ export const store = createStore({
 
       GENERATE_EXPRESSIONS: (state) => {
          state.generatedExpression ={
-            value: generate(state.configs),
+            expression: generate(state.configs),
             isSolved: false
          }
 
-         // state.leftIdentity = getLeftIdentity(state.generatedExpression.value)
-
          state.inputExpression = createInputExpression(
-            state.generatedExpression.value
+            state.generatedExpression.expression
          )
-
-
+         focusInput(state.currentInput, state.inputs)
       },
 
       CLICK_NUM: (state, payload) => {
@@ -47,21 +44,19 @@ export const store = createStore({
       },
 
       SHOW_LEFT_IDENTITY: (state) => {
-         state.leftIdentity = getLeftIdentity(state.generatedExpression.value)
+         state.leftIdentity = getLeftIdentity(state.generatedExpression.expression)
 
          focusInput(state.currentInput, state.inputs)
       },
 
       CHECK_SOLUTION: (state) => {
-         const solution = state.generatedExpression.value.find(
+         const solution = state.generatedExpression.expression.find(
             (sign) => sign.type === 'total'
          ).value
 
          const leftIdentity = getLeftIdentity(state.inputExpression)
 
          const rightIdentity = eval(leftIdentity)
-
-         // rightIdentity === solution ? alert('Молодец!') : alert('Болван!')
 
          if (rightIdentity === solution) {
             state.generatedExpression.isSolved = true
