@@ -34,8 +34,8 @@
          <div v-for="operator in operators" :key="operator.id">
             <input
                type="checkbox"
-               @change="selectOperator(operator)"
-               v-model="operator.isChecked"
+               :value='operator.sign'
+               v-model="configs.selectedOperators"
             />
             <span>{{ operator.name }}</span>
          </div>
@@ -62,7 +62,7 @@ export default {
       const show = ref(false)
 
       const operators = ref([
-         { id: 1, isChecked: false, name: 'Суммирование', sign: '+' },
+         { id: 1, isChecked: true, name: 'Суммирование', sign: '+' },
          { id: 2, isChecked: false, name: 'Разность', sign: '-' },
          { id: 3, isChecked: false, name: 'Умножение', sign: '*' },
          { id: 4, isChecked: false, name: 'Деление', sign: '/' },
@@ -77,7 +77,7 @@ export default {
       const configs = ref({
          difficulty: '5',
          time: '5',
-         selectedOperators: [],
+         selectedOperators: ['+'],
       })
 
       const expressions = computed(() => store.state.expressions)

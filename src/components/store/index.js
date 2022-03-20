@@ -7,10 +7,15 @@ export const store = createStore({
    state() {
       return {
          configs: null,
+         // current
          generatedExpression: [],
+         // history
          expressions: [],
+         // input variany
          inputExpression: [],
+         // help
          leftIdentity: '',
+         
          inputs: [],
          currentInput: 1,
       }
@@ -70,7 +75,7 @@ export const store = createStore({
       },
 
       SET_INPUTS: (state, payload) => {
-         state.inputs = payload
+         // state.inputs = payload
       },
 
       SELECT_INPUT: (state, payload) => {

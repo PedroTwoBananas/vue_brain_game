@@ -1,8 +1,9 @@
 export class Timer {
-   constructor(countDown) {
+   constructor(countDown, goToMain) {
       this.id = null;
       this.countDown = countDown;
       this.isRunning = false;
+      this.goToMain = goToMain
    }
 
    start() {
@@ -11,6 +12,10 @@ export class Timer {
       }
       this.id = setInterval(() => {
          this.countDown.value--;
+         if(this.countDown.value === 0) {
+            this.stop()
+            this.goToMain()
+         } 
       }, 1000);
       this.isRunning = true;
    }

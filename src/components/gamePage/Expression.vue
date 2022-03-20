@@ -5,15 +5,11 @@
             {{ sign.value }}
          </span>
          <input
-            @click='selectInputByClick(sign.id)'
+            @click="selectInputByClick(sign.id)"
             class="sign-input"
             :id="sign.id"
             type="number"
-            :ref="
-               (el) => {
-                  if (el) inputs[sign.id - 1] = el
-               }
-            "
+            :ref="(el) => (inputs[sign.id - 1] = el)"
             v-model="sign.value"
             v-if="sign.hidden"
          />
@@ -24,48 +20,32 @@
 
 <script>
 import { useStore } from 'vuex'
-import {nextTick} from 'vue'
-import { onMounted, ref } from 'vue'
-import { computed } from 'vue'
-import { createInputExpression } from '@/components/functions/createInputExpression'
-
+import { nextTick, toRefs, watchEffect } from 'vue'
+import { ref } from 'vue'
 export default {
-   setup() {
+   props: { inputExpression: Array, current: Number },
+   setup(props) {
+      const { current } = toRefs(props)
       const store = useStore()
 
-
-      // console.log(smth.value)
-      // const inputExpression = ref(createInputExpression(smth.value))
-      // console.log(inputExpression.value)
-      // const smth = computed(() => store.state.generatedExpression)
-      // console.log(smth.value)
-
-
-
-      const inputExpression = computed(() => store.state.inputExpression)
-
-      let currentInput = computed(() => store.state.currentInput)
-
       const inputs = ref([])
-
-       const focus = () => {
-         inputs.value.map((input) => {
-            if (input.id == currentInput.value) {
-               input.focus()
-            }
-         })
-      }
 
       const selectInputByClick = (id) => {
          store.dispatch('selectInput', id)
       }
-
-       onMounted(() => {
-          store.dispatch('SET_INPUTS', inputs)
-          nextTick(focus)
+      // const current = ref(null)
+      watchEffect(async () => {
+         if (inputs.value.length === 0) return
+         // inputs.value[props.current].focus()
+         const v = current.value
+         await nextTick()
+         inputs.value[v].focus()
+         
       })
 
-      return {  inputExpression, inputs, selectInputByClick }
+      
+
+      return { inputs, selectInputByClick, }
    },
 }
 </script>
