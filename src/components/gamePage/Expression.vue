@@ -1,6 +1,10 @@
 <template>
    <div class="expression">
-      <div v-for="sign in inputExpression" :key="sign.id">
+      <div
+         class="expression-sign"
+         v-for="sign in inputExpression"
+         :key="sign.id"
+      >
          <span v-if="!sign.hidden && sign.type !== 'total'">
             {{ sign.value }}
          </span>
@@ -35,4 +39,25 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.expression {
+   display: flex;
+   flex-direction: row;
+}
+
+.expression-sign {
+   margin-right: 6px;
+}
+
+.sign-input {
+   width: 30px;
+   border: none;
+   border-bottom: 1px solid black;
+}
+
+.sign-input::-webkit-outer-spin-button,
+.sign-input::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+   margin: 0;
+}
+</style>

@@ -254,6 +254,7 @@ p {
 }
 
 .run-game-block {
+   width: 500px;
    margin-top: 20px;
    display: flex;
    justify-content: flex-end;

@@ -1,12 +1,15 @@
 <template>
    <div>
+      <div>
+         <button>Отмена</button>
+         <Timer :isBlockedTime="isBlockedTime" />
+      </div>
       <Expression
          :inputExpression="inputExpression"
          :current="current"
          @selectInput="selectInput"
          @getInputs="getInputs"
       />
-      <Timer :isBlockedTime="isBlockedTime" />
       <KeyBoard
          :generatedExpression="generatedExpression"
          :leftIdentity="leftIdentity"
