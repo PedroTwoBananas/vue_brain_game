@@ -1,26 +1,28 @@
 <template>
-   <div>
-      <div>
-         <button>Отмена</button>
-         <Timer :isBlockedTime="isBlockedTime" />
+   <div class="game">
+      <div class="game-wrapper">
+         <div class="header-game-section">
+            <button class='go-to-main-button'>&#10006; Отмена</button>
+            <Timer :isBlockedTime="isBlockedTime" />
+         </div>
+         <Expression
+            :inputExpression="inputExpression"
+            :current="current"
+            @selectInput="selectInput"
+            @getInputs="getInputs"
+         />
+         <KeyBoard
+            :generatedExpression="generatedExpression"
+            :leftIdentity="leftIdentity"
+            @clickNum="clickNum"
+            @next="next"
+            @prev="prev"
+            @toggleTimer="toggleTimer"
+            @checkSolution="checkSolution"
+            @generateExpression="generateExpression"
+            :isBlockedTime="isBlockedTime"
+         />
       </div>
-      <Expression
-         :inputExpression="inputExpression"
-         :current="current"
-         @selectInput="selectInput"
-         @getInputs="getInputs"
-      />
-      <KeyBoard
-         :generatedExpression="generatedExpression"
-         :leftIdentity="leftIdentity"
-         @clickNum="clickNum"
-         @next="next"
-         @prev="prev"
-         @toggleTimer="toggleTimer"
-         @checkSolution="checkSolution"
-         @generateExpression="generateExpression"
-         :isBlockedTime="isBlockedTime"
-      />
    </div>
 </template>
 
@@ -151,4 +153,30 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.game {
+   margin-top: 100px;
+   display: flex;
+   justify-content: center;
+}
+
+.game-wrapper {
+   width: 400px;
+}
+
+.header-game-section {
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.go-to-main-button {
+   width: 80px;
+   height: 40px;
+   background-color: white;
+   border: none;
+   box-shadow:  -1px 1px 3px grey;
+   color: grey;
+}
+</style>

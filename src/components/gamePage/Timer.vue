@@ -1,6 +1,6 @@
 <template>
    <div>
-      <h1>{{ convertToString(countDownTime) }}</h1>
+      <span>{{ convertToString(countDownTime) }}</span>
    </div>
 </template>
 
