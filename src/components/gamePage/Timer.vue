@@ -6,7 +6,7 @@
 
 <script>
 import { convertToString } from '@/components/functions/convertToString'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref} from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { Timer } from '@/components/functions/timer'
@@ -26,8 +26,11 @@ export default {
    setup(props) {
       const store = useStore()
       const router = useRouter()
+      const goToMain = () => {
+         router.push({name: 'main'})
+      }
       const countDownTime = ref(+store.state.configs.time * 60)
-      let timer = new Timer(countDownTime)
+      const timer = new Timer(countDownTime, goToMain)
       onMounted(() => timer.start())
       onBeforeUnmount(() => timer.stop())
       return { timer, countDownTime, convertToString }

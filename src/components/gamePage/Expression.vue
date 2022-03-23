@@ -5,11 +5,11 @@
             {{ sign.value }}
          </span>
          <input
-            @click="selectInputByClick(sign.id)"
+            @click="$emit('selectInput', sign.id)"
             class="sign-input"
             :id="sign.id"
             type="number"
-            :ref="(el) => (inputs[sign.id - 1] = el)"
+            :ref="(el) => (inputs[sign.id] = el)"
             v-model="sign.value"
             v-if="sign.hidden"
          />
@@ -19,33 +19,18 @@
 </template>
 
 <script>
-import { useStore } from 'vuex'
-import { nextTick, toRefs, watchEffect } from 'vue'
+import { onMounted } from 'vue'
 import { ref } from 'vue'
 export default {
    props: { inputExpression: Array, current: Number },
-   setup(props) {
-      const { current } = toRefs(props)
-      const store = useStore()
-
+   setup(props, context) {
       const inputs = ref([])
 
-      const selectInputByClick = (id) => {
-         store.dispatch('selectInput', id)
-      }
-      // const current = ref(null)
-      watchEffect(async () => {
-         if (inputs.value.length === 0) return
-         // inputs.value[props.current].focus()
-         const v = current.value
-         await nextTick()
-         inputs.value[v].focus()
-         
+      onMounted(() => {
+         context.emit('getInputs', inputs.value)
       })
 
-      
-
-      return { inputs, selectInputByClick, }
+      return { inputs }
    },
 }
 </script>
