@@ -43,6 +43,8 @@ export default {
 .expression {
    display: flex;
    flex-direction: row;
+   font-size: 24px;
+   font-family: Verdana;
 }
 
 .expression-sign {
@@ -50,6 +52,8 @@ export default {
 }
 
 .sign-input {
+   font-size: 22px;
+   font-family: Verdana;
    width: 30px;
    border: none;
    border-bottom: 1px solid black;

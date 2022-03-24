@@ -265,7 +265,6 @@ p {
    height: 40px;
    background-color: white;
    border: none;
-   box-shadow:  -1px 1px 3px grey;
+   box-shadow: -1px 1px 3px grey;
 }
-
 </style>

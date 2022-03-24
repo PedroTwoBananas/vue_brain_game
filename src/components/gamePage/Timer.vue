@@ -1,14 +1,15 @@
 <template>
-   <div>
-      <span>{{ convertToString(countDownTime) }}</span>
+   <div class="timer-block">
+      <span class="timer-text">{{ convertToString(countDownTime) }}</span>
    </div>
 </template>
 
 <script>
 import { convertToString } from '@/components/functions/convertToString'
-import { onBeforeUnmount, onMounted, ref} from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { goToMain } from '@/components/functions/goToMain'
 import { Timer } from '@/components/functions/timer'
 export default {
    props: {
@@ -26,11 +27,11 @@ export default {
    setup(props) {
       const store = useStore()
       const router = useRouter()
-      const goToMain = () => {
-         router.push({name: 'main'})
+      const toMain = () => {
+         goToMain(router)
       }
       const countDownTime = ref(+store.state.configs.time * 60)
-      const timer = new Timer(countDownTime, goToMain)
+      const timer = new Timer(countDownTime, toMain)
       onMounted(() => timer.start())
       onBeforeUnmount(() => timer.stop())
       return { timer, countDownTime, convertToString }
@@ -38,4 +39,9 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.timer-text {
+   font-size: 24px;
+   font-weight: bolder;
+}
+</style>

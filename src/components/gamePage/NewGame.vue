@@ -2,7 +2,9 @@
    <div class="game">
       <div class="game-wrapper">
          <div class="header-game-section">
-            <button class='go-to-main-button'>&#10006; Отмена</button>
+            <button @click="toMain" class="go-to-main-button">
+               &#10006; ОТМЕНА
+            </button>
             <Timer :isBlockedTime="isBlockedTime" />
          </div>
          <Expression
@@ -30,9 +32,10 @@
 import Expression from '@/components/gamePage/Expression'
 import KeyBoard from '@/components/gamePage/KeyBoard'
 import Timer from '@/components/gamePage/Timer'
-import { ref } from 'vue'
-import { watchEffect } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
+import { goToMain } from '@/components/functions/goToMain'
 import { createInputExpression } from '../functions/createInputExpression'
 import { getLeftIdentity } from '../functions/getLeftIdentity'
 import { generate } from '@/components/functions/generate'
@@ -41,6 +44,11 @@ export default {
    components: { KeyBoard, Expression, Timer },
    setup() {
       const store = useStore()
+      const router = useRouter()
+
+      const toMain = () => {
+         goToMain(router)
+      }
       const generatedExpression = ref({
          expression: generate(store.state.configs),
          isSolved: false,
@@ -148,6 +156,7 @@ export default {
          generateExpression,
          getInputs,
          inputsHtml,
+         toMain,
       }
    },
 }
@@ -155,28 +164,32 @@ export default {
 
 <style scoped>
 .game {
-   margin-top: 100px;
+   margin-top: 200px;
    display: flex;
    justify-content: center;
 }
 
 .game-wrapper {
-   width: 400px;
+   display: flex;
+   flex-direction: column;
+   gap: 50px;
+   align-items: center;
 }
 
 .header-game-section {
    display: flex;
+   gap: 200px;
    flex-direction: row;
    justify-content: space-between;
    align-items: center;
 }
 
 .go-to-main-button {
-   width: 80px;
+   width: 100px;
    height: 40px;
    background-color: white;
    border: none;
-   box-shadow:  -1px 1px 3px grey;
+   box-shadow: 0px 2px 3px grey;
    color: grey;
 }
 </style>

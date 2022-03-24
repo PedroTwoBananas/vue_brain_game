@@ -9,16 +9,12 @@ export const store = createStore({
    },
 
    mutations: {
-
-      GET_STATISTICS: (state) => {
-         const statistic = JSON.parse(localStorage.getItem('statistics'))
-         statistic === null ? (state.statistics = []) : (state.statistics = statistic)
+      GET_STATISTICS: (state, payload) => {
+         state.statistics = payload
       },
 
       ADD_GAME_CONFIGS: (state, payload) => {
          state.configs = payload
-         localStorage.setItem('configs', JSON.stringify(state.configs))
-         localStorage.removeItem('statistics')
       },
 
       ADD_TO_STATISTICS: (state, payload) => {
@@ -29,11 +25,14 @@ export const store = createStore({
 
    actions: {
       getStatistics: (context) => {
-         context.commit('GET_STATISTICS')
+         const statistic = JSON.parse(localStorage.getItem('statistics')) || []
+         context.commit('GET_STATISTICS', statistic)
       },
 
       addGameConfigs: (context, payload) => {
          context.commit('ADD_GAME_CONFIGS', payload)
+         localStorage.setItem('configs', JSON.stringify(payload))
+         localStorage.removeItem('statistics')
       },
 
       addToStatistics: (context, payload) => {
