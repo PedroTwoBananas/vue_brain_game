@@ -9,7 +9,7 @@ export const store = createStore({
    },
 
    mutations: {
-      GET_STATISTICS: (state, payload) => {
+      SET_STATISTICS: (state, payload) => {
          state.statistics = payload
       },
 
@@ -24,9 +24,9 @@ export const store = createStore({
    },
 
    actions: {
-      getStatistics: (context) => {
+      setStatistics: (context) => {
          const statistic = JSON.parse(localStorage.getItem('statistics')) || []
-         context.commit('GET_STATISTICS', statistic)
+         context.commit('SET_STATISTICS', statistic)
       },
 
       addGameConfigs: (context, payload) => {

@@ -115,7 +115,7 @@ export default {
       })
 
       onMounted(() => {
-         store.dispatch('getStatistics')
+         store.dispatch('setStatistics')
       })
 
       const expressions = computed(() => store.state.statistics)
