@@ -1,3 +1,3 @@
 export const goToMain = (router) => {
-    return router.push({ name: 'main'})
- }
+   return router.push({ name: 'main' })
+}

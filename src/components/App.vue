@@ -3,7 +3,11 @@
 </template>
 
 <script>
-export default {}
+export default {
+   mounted() {
+      this.$router.push({ name: 'main' })
+   },
+}
 </script>
 
 <style></style>
