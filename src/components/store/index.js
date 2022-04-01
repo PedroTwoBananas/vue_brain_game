@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-import { db } from '@/components/functions/db'
+import { StatisticsStore } from '../services/StatisticsStore'
 
 export const store = createStore({
    state() {
@@ -10,7 +10,7 @@ export const store = createStore({
    },
 
    mutations: {
-      SET_STATISTICS: (state, payload) => {
+      LOAD_STATISTICS: (state, payload) => {
          state.statistics = payload
       },
 
@@ -24,20 +24,19 @@ export const store = createStore({
    },
 
    actions: {
-      setStatistics: (context) => {
-         const statistic = db.get('statistics') || []
-         context.commit('SET_STATISTICS', statistic)
+      loadStatistics: (context) => {
+         const statistic = StatisticsStore.loadStatistics() || []
+         context.commit('LOAD_STATISTICS', statistic)
       },
 
       addGameConfigs: (context, payload) => {
          context.commit('ADD_GAME_CONFIGS', payload)
-         db.set('configs', payload)
-         db.remove('statistics')
+         StatisticsStore.removeStatistics()
       },
 
       addToStatistics: (context, payload) => {
          context.commit('ADD_TO_STATISTICS', payload)
-         db.set('statistics', context.state.statistics)
+         StatisticsStore.addToStatistics(context.state.statistics)
       },
    },
 })
