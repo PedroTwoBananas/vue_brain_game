@@ -1,6 +1,4 @@
 class LocalStorage {
-   constructor() {}
-
    addToStatistics(data) {
       return localStorage.setItem('statistics', JSON.stringify(data))
    }

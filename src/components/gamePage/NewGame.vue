@@ -35,11 +35,13 @@ import Timer from '@/components/gamePage/Timer'
 import { ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import { goToMain } from '@/components/functions/goToMain'
-import { createInputExpression } from '../functions/createInputExpression'
-import { getLeftIdentity } from '../functions/getLeftIdentity'
-import { generate } from '@/components/functions/generate'
-import { focusInput } from '../functions/focusInput'
+import { goToMain } from '@/components/utils/goToMain'
+import { createInputExpression } from '../utils/createInputExpression'
+import { getLeftIdentity } from '../utils/getLeftIdentity'
+import { randomExpressionGenerator } from '@/components/utils/randomExpressionGenerator'
+import { focusInput } from '../utils/focusInput'
+import {Exp} from '@/components/utils/expression'
+
 export default {
    components: { KeyBoard, Expression, Timer },
    setup() {
@@ -49,8 +51,12 @@ export default {
       const toMain = () => {
          goToMain(router)
       }
+      const exp = new Exp(store.state.configs)
+
+      console.log(exp.generateExpression());
+
       const generatedExpression = ref({
-         expression: generate(store.state.configs),
+         expression: exp.generateExpression(),
          isSolved: false,
       })
 
@@ -120,7 +126,7 @@ export default {
 
       const generateExpression = () => {
          generatedExpression.value = {
-            expression: generate(store.state.configs),
+            expression: exp.generateExpression(),
             isSolved: false,
          }
 

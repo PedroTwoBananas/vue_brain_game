@@ -1,4 +1,4 @@
-export const convertToString = (time) => {
+export const numberToTimeConventer = (time) => {
    let minutes = String(Math.trunc(time / 60))
    let seconds = String(time % 60)
    if (minutes.length === 1) {

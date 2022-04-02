@@ -1,4 +1,4 @@
-export const generate = (configs) => {
+export const randomExpressionGenerator = (configs) => {
    const getRandomInt = (min, max) => {
       const rand = min + Math.random() * (max + 1 - min)
 
