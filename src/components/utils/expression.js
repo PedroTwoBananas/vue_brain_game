@@ -1,4 +1,5 @@
-import { createInputExpression } from './createInputExpression'
+import { getRandomNum } from '@/components/utils/getRundomNum'
+import uniqid from 'uniqid'
 
 export class Exp {
    constructor(configs) {
@@ -7,53 +8,56 @@ export class Exp {
       this.maxNum = 9
    }
 
+   addNumber = (exp, isHidden, id) => {
+      return exp.push(
+         {
+            type: 'number',
+            value: getRandomNum(this.minNum, this.maxNum),
+            hidden: isHidden,
+            id: id,
+         },
+      )
+   }
+
+   addOperator = (exp, configs, id) => {
+      return exp.push({
+         type: 'operator',
+         value: configs[getRandomNum(0, configs.length - 1)],
+         hidden: false,
+         id: id,
+      })
+   }
+
+   addSolution = (exp, fullExp, id) => {
+      return exp.push({
+         type: 'total',
+         value: eval(fullExp),
+         hidden: false,
+         id: id,
+      })
+   }
+
    generateExpression = () => {
-      const getRandomInt = (min, max) => {
-         const rand = min + Math.random() * (max + 1 - min)
-
-         return Math.floor(rand)
-      }
-
       const difficulty = +this.configs.difficulty
-
       const operators = this.configs.selectedOperators
-
       const expression = []
 
-      expression.push({
-         type: 'number',
-         value: getRandomInt(this.minNum, this.maxNum),
-         hidden: false,
-      })
-
-      expression.push({
-         type: 'operator',
-         value: operators[getRandomInt(0, operators.length - 1)],
-      })
+      this.addNumber(expression, false, uniqid())
+      this.addOperator(expression, operators, uniqid())
 
       for (let i = 0; i < difficulty; i++) {
-         expression.push({
-            type: 'number',
-            value: getRandomInt(this.minNum, this.maxNum),
-            hidden: true,
-            id: i,
-         })
+         this.addNumber(expression, true, i)
 
          if (i !== difficulty - 1) {
-            expression.push({
-               type: 'operator',
-               value: operators[getRandomInt(0, operators.length - 1)],
-            })
+            this.addOperator(expression, operators, uniqid())
          }
       }
 
       const fullExpression = expression
          .map((elem) => elem.value.toString())
          .join('')
-      expression.push({
-         type: 'total',
-         value: eval(fullExpression),
-      })
+
+      this.addSolution(expression, fullExpression, uniqid())
 
       return expression
    }

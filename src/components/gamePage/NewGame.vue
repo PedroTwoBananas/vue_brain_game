@@ -1,28 +1,28 @@
 <template>
-   <div class="game">
-      <div class="game-wrapper">
-         <div class="header-game-section">
-            <button @click="toMain" class="go-to-main-button">
+   <div class='game'>
+      <div class='game-wrapper'>
+         <div class='header-game-section'>
+            <button @click='toMain' class='go-to-main-button'>
                &#10006; ОТМЕНА
             </button>
-            <Timer :isBlockedTime="isBlockedTime" />
+            <Timer :isBlockedTime='isBlockedTime' />
          </div>
          <Expression
-            :inputExpression="inputExpression"
-            :current="current"
-            @selectInput="selectInput"
-            @getInputs="getInputs"
+            :inputExpression='inputExpression'
+            :current='current'
+            @selectInput='selectInput'
+            @getInputs='getInputs'
          />
          <KeyBoard
-            :generatedExpression="generatedExpression"
-            :leftIdentity="leftIdentity"
-            @clickNum="clickNum"
-            @next="next"
-            @prev="prev"
-            @toggleTimer="toggleTimer"
-            @checkSolution="checkSolution"
-            @generateExpression="generateExpression"
-            :isBlockedTime="isBlockedTime"
+            :generatedExpression='generatedExpression'
+            :leftIdentity='leftIdentity'
+            @clickNum='clickNum'
+            @next='next'
+            @prev='prev'
+            @toggleTimer='toggleTimer'
+            @checkSolution='checkSolution'
+            @generateExpression='generateExpression'
+            :isBlockedTime='isBlockedTime'
          />
       </div>
    </div>
@@ -40,7 +40,7 @@ import { createInputExpression } from '../utils/createInputExpression'
 import { getLeftIdentity } from '../utils/getLeftIdentity'
 import { randomExpressionGenerator } from '@/components/utils/randomExpressionGenerator'
 import { focusInput } from '../utils/focusInput'
-import {Exp} from '@/components/utils/expression'
+import { Exp } from '@/components/utils/expression'
 
 export default {
    components: { KeyBoard, Expression, Timer },
@@ -53,19 +53,17 @@ export default {
       }
       const exp = new Exp(store.state.configs)
 
-      console.log(exp.generateExpression());
-
       const generatedExpression = ref({
          expression: exp.generateExpression(),
          isSolved: false,
       })
 
       const leftIdentity = ref(
-         getLeftIdentity(generatedExpression.value.expression)
+         getLeftIdentity(generatedExpression.value.expression),
       )
 
       const inputExpression = ref(
-         createInputExpression(generatedExpression.value.expression)
+         createInputExpression(generatedExpression.value.expression),
       )
       const inputsHtml = ref([])
 
@@ -108,7 +106,7 @@ export default {
 
       const checkSolution = () => {
          const solution = generatedExpression.value.expression.find(
-            (sign) => sign.type === 'total'
+            (sign) => sign.type === 'total',
          ).value
 
          const userLeftIdentity = getLeftIdentity(inputExpression.value)
@@ -131,10 +129,10 @@ export default {
          }
 
          leftIdentity.value = getLeftIdentity(
-            generatedExpression.value.expression
+            generatedExpression.value.expression,
          )
          inputExpression.value = createInputExpression(
-            generatedExpression.value.expression
+            generatedExpression.value.expression,
          )
          focusInput(current.value, inputsHtml.value)
       }
@@ -144,7 +142,7 @@ export default {
             if (inputsHtml.value.length === 0) return
             inputsHtml.value[current.value].focus()
          },
-         { flush: 'post' }
+         { flush: 'post' },
       )
 
       return {
