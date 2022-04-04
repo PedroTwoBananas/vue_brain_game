@@ -9,9 +9,8 @@
          </div>
          <Expression
             :inputExpression='inputExpression'
-            :current='current'
             @selectInput='selectInput'
-            @getInputs='getInputs'
+            @setInputs='setInputs'
          />
          <KeyBoard
             :generatedExpression='generatedExpression'
@@ -38,7 +37,6 @@ import { useRouter } from 'vue-router'
 import { goToMain } from '@/components/utils/goToMain'
 import { createInputExpression } from '../utils/createInputExpression'
 import { getLeftIdentity } from '../utils/getLeftIdentity'
-import { randomExpressionGenerator } from '@/components/utils/randomExpressionGenerator'
 import { focusInput } from '../utils/focusInput'
 import { Exp } from '@/components/utils/expression'
 
@@ -51,6 +49,7 @@ export default {
       const toMain = () => {
          goToMain(router)
       }
+
       const exp = new Exp(store.state.configs)
 
       const generatedExpression = ref({
@@ -65,13 +64,14 @@ export default {
       const inputExpression = ref(
          createInputExpression(generatedExpression.value.expression),
       )
+
       const inputsHtml = ref([])
 
-      const getInputs = (arr) => {
+      const setInputs = (arr) => {
          inputsHtml.value = arr
       }
 
-      const current = ref(0)
+      const currentInput = ref(0)
 
       const isBlockedTime = ref(false)
 
@@ -80,46 +80,41 @@ export default {
       }
 
       const selectInput = (id) => {
-         current.value = id
+         currentInput.value = id
       }
 
       const prev = () => {
-         if (current.value > 0) current.value = current.value - 1
-         focusInput(current.value, inputsHtml.value)
+         if (currentInput.value > 0) currentInput.value = currentInput.value - 1
+         focusInput(currentInput.value, inputsHtml.value)
       }
 
       const next = () => {
-         if (current.value < store.state.configs.difficulty - 1) {
-            current.value += 1
+         if (currentInput.value < store.state.configs.difficulty - 1) {
+            currentInput.value += 1
          }
-         focusInput(current.value, inputsHtml.value)
+         focusInput(currentInput.value, inputsHtml.value)
       }
 
       const clickNum = (num) => {
          inputExpression.value.forEach((sign) => {
-            if (sign.id === current.value) {
+            if (sign.id === currentInput.value) {
                sign.value = sign.value + '' + num
             }
          })
-         focusInput(current.value, inputsHtml.value)
+         focusInput(currentInput.value, inputsHtml.value)
       }
 
       const checkSolution = () => {
          const solution = generatedExpression.value.expression.find(
             (sign) => sign.type === 'total',
          ).value
-
          const userLeftIdentity = getLeftIdentity(inputExpression.value)
-
          const rightIdentity = eval(userLeftIdentity)
-
          if (rightIdentity === solution) {
             generatedExpression.value.isSolved = true
          }
-
          store.dispatch('addToStatistics', generatedExpression.value)
-
-         current.value = 0
+         currentInput.value = 0
       }
 
       const generateExpression = () => {
@@ -127,20 +122,19 @@ export default {
             expression: exp.generateExpression(),
             isSolved: false,
          }
-
          leftIdentity.value = getLeftIdentity(
             generatedExpression.value.expression,
          )
          inputExpression.value = createInputExpression(
             generatedExpression.value.expression,
          )
-         focusInput(current.value, inputsHtml.value)
+         focusInput(currentInput.value, inputsHtml.value)
       }
 
       watchEffect(
          () => {
             if (inputsHtml.value.length === 0) return
-            inputsHtml.value[current.value].focus()
+            inputsHtml.value[currentInput.value].focus()
          },
          { flush: 'post' },
       )
@@ -151,14 +145,14 @@ export default {
          leftIdentity,
          inputExpression,
          toggleTimer,
-         current,
+         currentInput,
          selectInput,
          prev,
          next,
          clickNum,
          checkSolution,
          generateExpression,
-         getInputs,
+         setInputs,
          inputsHtml,
          toMain,
       }

@@ -16,6 +16,7 @@ export const store = createStore({
 
       ADD_GAME_CONFIGS: (state, payload) => {
          state.configs = payload
+         state.statistics = []
       },
 
       ADD_TO_STATISTICS: (state, payload) => {

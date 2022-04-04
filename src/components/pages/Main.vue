@@ -1,81 +1,81 @@
 <template>
-   <div class="main-section">
-      <div class="main-wrapper">
-         <div class="greetings-block">
-            <div class="greeting-hello-block">
-               <span class="greeting-hello-text">Привет!</span>
+   <div class='main-section'>
+      <div class='main-wrapper'>
+         <div class='greetings-block'>
+            <div class='greeting-hello-block'>
+               <span class='greeting-hello-text'>Привет!</span>
             </div>
-            <p class="greetings-description">
+            <p class='greetings-description'>
                Добро пожаловать на 24 тренировочный день. Ваш последний
                результат -
                {{ solvedExpressions }} из {{ expressions.length }}. <br />
                Общая точность {{ percent || 0 }}%.
             </p>
          </div>
-         <div class="options-block">
-            <div class="options-title-block">
-               <span class="options-title-text">Настройки</span>
+         <div class='options-block'>
+            <div class='options-title-block'>
+               <span class='options-title-text'>Настройки</span>
             </div>
-            <div class="options-input-block">
-               <div class="options-labels">
+            <div class='options-input-block'>
+               <div class='options-labels'>
+                  <label>{{ defaultRanges.time.timeMin }}</label>
+                  <label>{{ defaultRanges.time.timeMax }}</label>
+               </div>
+               <input
+                  class='options-input-range'
+                  type='range'
+
+                  min='1'
+                  max='15'
+                  step='1'
+                  v-model='defaultRanges.time.medium'
+               />
+               <span class='options-input-title'>
+                  Длительность {{ defaultRanges.time.medium }} минут
+               </span>
+            </div>
+            <div class='options-input-block'>
+               <div class='options-labels'>
                   <label>1</label>
                   <label>15</label>
                </div>
                <input
-                  class="options-input-range"
-                  type="range"
-                  list="marks"
-                  min="1"
-                  max="15"
-                  step="1"
-                  v-model="configs.time"
+                  class='options-input-range'
+                  type='range'
+                  min='{{defaultRanges.difficulty.diffMin}}'
+                  max='{{defaultRanges.difficulty.diffMax}}'
+                  step='1'
+                  v-model='configs.difficulty'
                />
-               <span class="options-input-title">
-                  Длительность {{ configs.time }} минут
-               </span>
-            </div>
-            <div class="options-input-block">
-               <div class="options-labels">
-                  <label>1</label>
-                  <label>10</label>
-               </div>
-               <input
-                  class="options-input-range"
-                  type="range"
-                  min="1"
-                  max="10"
-                  step="1"
-                  v-model="configs.difficulty"
-               />
-               <span class="options-input-title">
+               <span class='options-input-title'>
                   Сложность {{ configs.difficulty }}
                </span>
             </div>
          </div>
-         <div class="options-operators-block">
+         <div class='options-operators-block'>
             <div
-               class="options-operator"
-               v-for="operator in operators"
-               :key="operator.id"
+               class='options-operator'
+               v-for='operator in operators'
+               :key='operator.id'
             >
                <label>
                   <input
-                     class="options-operator-checkbox"
-                     type="checkbox"
-                     :value="operator.sign"
-                     v-model="configs.selectedOperators"
+                     class='options-operator-checkbox'
+                     type='checkbox'
+                     :value='operator.sign'
+                     v-model='configs.selectedOperators'
                   />
-                  <span class="options-operator-title">
+                  <span class='options-operator-title'>
                      {{ operator.name }}
                   </span>
                </label>
             </div>
          </div>
-         <div class="run-game-block">
-            <button class="run-game-button" @click="playGame">Play!</button>
+         <div class='run-game-block'>
+            <button class='run-game-button' @click='playGame'>Play!</button>
          </div>
-         <teleport to="body" v-if="show">
-            <Modal @ok="closeModal">Выберите минимум один оператор!</Modal>
+         <teleport to='body' v-if='show'>
+            <Modal @ok='closeModal'>Выберите минимум один оператор!</Modal>
          </teleport>
       </div>
    </div>
@@ -86,6 +86,7 @@ import { computed, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import Modal from '@/components/Modal'
+
 export default {
    components: { Modal },
    setup() {
@@ -94,6 +95,13 @@ export default {
       const router = useRouter()
 
       const show = ref(false)
+
+      const defaultRanges = ref(
+         {
+            time: { timeMin: 1, timeMax: 15, medium: 7 },
+            difficulty: { diffMin: 1, diffMax: 10, medium: 5 },
+         },
+      )
 
       const operators = ref([
          { id: 1, isChecked: false, name: 'Суммирование', sign: '+' },
@@ -122,11 +130,11 @@ export default {
 
       const solvedExpressions = computed(
          () =>
-            expressions.value.filter((expression) => expression.isSolved).length
+            expressions.value.filter((expression) => expression.isSolved).length,
       )
 
       const percent = computed(() =>
-         Math.trunc((solvedExpressions.value * 100) / expressions.value.length)
+         Math.trunc((solvedExpressions.value * 100) / expressions.value.length),
       )
 
       const playGame = () => {
@@ -142,6 +150,7 @@ export default {
 
       return {
          operators,
+         defaultRanges,
          configs,
          playGame,
          show,

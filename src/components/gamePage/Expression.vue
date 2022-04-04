@@ -26,12 +26,12 @@
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 export default {
-   props: { inputExpression: Array, current: Number },
+   props: { inputExpression: Array },
    setup(props, context) {
       const inputs = ref([])
 
       onMounted(() => {
-         context.emit('getInputs', inputs.value)
+         context.emit('setInputs', inputs.value)
       })
 
       return { inputs }
