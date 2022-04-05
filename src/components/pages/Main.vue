@@ -6,7 +6,7 @@
                <span class='greeting-hello-text'>Привет!</span>
             </div>
             <p class='greetings-description'>
-               Добро пожаловать на 24 тренировочный день. Ваш последний
+               Добро пожаловать на {{ configs.entrances }} тренировочный день. Ваш последний
                результат -
                {{ solvedExpressions }} из {{ expressions.length }}. <br />
                Общая точность {{ percent || 0 }}%.
@@ -86,6 +86,7 @@ import { computed, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import Modal from '@/components/Modal'
+import { defaultRanges } from '@/components/data/configs'
 
 export default {
    components: { Modal },
@@ -109,22 +110,9 @@ export default {
          },
       ])
 
-      const defaultRanges = ref(
-         {
-            time: { min: 1, max: 15 },
-            difficulty: { min: 1, max: 10 },
-         },
-      )
+      store.dispatch('loadConfigs')
+      const configs = computed(() => store.state.configs)
 
-      const configs = ref({
-         difficulty: Math.trunc(defaultRanges.value.difficulty.max / 2),
-         time: Math.trunc(defaultRanges.value.time.max / 2),
-         selectedOperators: [],
-      })
-
-      onMounted(() => {
-         store.dispatch('loadStatistics')
-      })
 
       const expressions = computed(() => store.state.statistics)
 
@@ -139,6 +127,7 @@ export default {
 
       const playGame = () => {
          if (configs.value.selectedOperators.length > 0) {
+
             store.dispatch('addGameConfigs', configs.value)
             router.push({ name: 'game' })
          } else show.value = true
@@ -147,6 +136,10 @@ export default {
       const closeModal = () => {
          show.value = false
       }
+
+      onMounted(() => {
+         store.dispatch('loadStatistics')
+      })
 
       return {
          operators,
