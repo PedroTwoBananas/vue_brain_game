@@ -1,11 +1,11 @@
 <template>
    <div class="timer-block">
-      <span class="timer-text">{{ numberToTimeConventer(countDownTime) }}</span>
+      <span class="timer-text">{{ formatTimer(countDownTime) }}</span>
    </div>
 </template>
 
 <script>
-import {numberToTimeConventer} from '../utils/mappers/numberToTimeConventer'
+import {formatTimer} from '../utils/mappers/formatTimer'
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
@@ -34,7 +34,7 @@ export default {
       const timer = new Timer(countDownTime, toMain)
       onMounted(() => timer.start())
       onBeforeUnmount(() => timer.stop())
-      return { timer, countDownTime, numberToTimeConventer }
+      return { timer, countDownTime, formatTimer }
    },
 }
 </script>

@@ -7,14 +7,14 @@
             </button>
             <Timer :isBlockedTime='isBlockedTime' />
          </div>
-         <Expression
-            :inputExpression='inputExpression'
+         <ExpressionBlock
+            :generatedExpression='expressionSetup.generatedExpression.expression'
             @selectInput='selectInput'
             @setInputs='setInputs'
          />
          <KeyBoard
-            :generatedExpression='generatedExpression'
-            :leftIdentity='leftIdentity'
+            :generatedExpression='expressionSetup.generatedExpression'
+            :leftIdentity='expressionSetup.leftIdentity'
             @clickNum='clickNum'
             @next='next'
             @prev='prev'
@@ -28,21 +28,31 @@
 </template>
 
 <script>
-import Expression from '@/components/gamePage/Expression'
+import ExpressionBlock from '@/components/gamePage/ExpressionBlock'
 import KeyBoard from '@/components/gamePage/KeyBoard'
 import Timer from '@/components/gamePage/Timer'
-import { ref, watchEffect } from 'vue'
+import { reactive, ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { goToMain } from '@/components/utils/goToMain'
-import { createInputExpression } from '../utils/createInputExpression'
 import { getLeftIdentity } from '../utils/getLeftIdentity'
+import { getUserLeftIdentity } from '../utils/getLeftIdentity'
 import { focusInput } from '../utils/focusInput'
-import { Exp } from '@/components/utils/expression'
+import { Expression } from '@/components/utils/expression'
 
 export default {
-   components: { KeyBoard, Expression, Timer },
+   components: { KeyBoard, ExpressionBlock, Timer },
    setup() {
+
+      function generateNewExpression() {
+         const newExpression = new Expression(store.state.configs).generateExpression()
+
+         expressionSetup.value = {
+            generatedExpression: { expression: newExpression, isSolved: false },
+            leftIdentity: getLeftIdentity(newExpression),
+         }
+      }
+
       const store = useStore()
       const router = useRouter()
 
@@ -50,20 +60,9 @@ export default {
          goToMain(router)
       }
 
-      const exp = new Exp(store.state.configs)
+      const expressionSetup = ref(null)
 
-      const generatedExpression = ref({
-         expression: exp.generateExpression(),
-         isSolved: false,
-      })
-
-      const leftIdentity = ref(
-         getLeftIdentity(generatedExpression.value.expression),
-      )
-
-      const inputExpression = ref(
-         createInputExpression(generatedExpression.value.expression),
-      )
+      generateNewExpression()
 
       const inputsHtml = ref([])
 
@@ -96,38 +95,30 @@ export default {
       }
 
       const clickNum = (num) => {
-         inputExpression.value.forEach((sign) => {
+         expressionSetup.value.generatedExpression.expression.forEach((sign) => {
             if (sign.id === currentInput.value) {
-               sign.value = sign.value + '' + num
+               sign.inputValue = sign.inputValue + '' + num
             }
          })
          focusInput(currentInput.value, inputsHtml.value)
       }
 
       const checkSolution = () => {
-         const solution = generatedExpression.value.expression.find(
+         const solution = expressionSetup.value.generatedExpression.expression.find(
             (sign) => sign.type === 'total',
          ).value
-         const userLeftIdentity = getLeftIdentity(inputExpression.value)
-         const rightIdentity = eval(userLeftIdentity)
-         if (rightIdentity === solution) {
-            generatedExpression.value.isSolved = true
+         const userSolution = eval(getUserLeftIdentity(expressionSetup.value.generatedExpression.expression))
+
+         if (userSolution === solution) {
+            expressionSetup.value.generatedExpression.isSolved = true
          }
-         store.dispatch('addToStatistics', generatedExpression.value)
+         store.dispatch('addToStatistics', expressionSetup.value.generatedExpression)
+
          currentInput.value = 0
       }
 
       const generateExpression = () => {
-         generatedExpression.value = {
-            expression: exp.generateExpression(),
-            isSolved: false,
-         }
-         leftIdentity.value = getLeftIdentity(
-            generatedExpression.value.expression,
-         )
-         inputExpression.value = createInputExpression(
-            generatedExpression.value.expression,
-         )
+         generateNewExpression()
          focusInput(currentInput.value, inputsHtml.value)
       }
 
@@ -141,9 +132,7 @@ export default {
 
       return {
          isBlockedTime,
-         generatedExpression,
-         leftIdentity,
-         inputExpression,
+         expressionSetup,
          toggleTimer,
          currentInput,
          selectInput,

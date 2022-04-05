@@ -18,32 +18,32 @@
             </div>
             <div class='options-input-block'>
                <div class='options-labels'>
-                  <label>{{ defaultRanges.time.timeMin }}</label>
-                  <label>{{ defaultRanges.time.timeMax }}</label>
+                  <label>{{ defaultRanges.time.min }}</label>
+                  <label>{{ defaultRanges.time.max }}</label>
                </div>
                <input
                   class='options-input-range'
                   type='range'
 
-                  min='1'
-                  max='15'
+                  :min='defaultRanges.time.min'
+                  :max='defaultRanges.time.max'
                   step='1'
-                  v-model='defaultRanges.time.medium'
+                  v-model='configs.time'
                />
                <span class='options-input-title'>
-                  Длительность {{ defaultRanges.time.medium }} минут
+                  Длительность {{ configs.time }} минут
                </span>
             </div>
             <div class='options-input-block'>
                <div class='options-labels'>
-                  <label>1</label>
-                  <label>15</label>
+                  <label>{{ defaultRanges.difficulty.min }}</label>
+                  <label>{{ defaultRanges.difficulty.max }}</label>
                </div>
                <input
                   class='options-input-range'
                   type='range'
-                  min='{{defaultRanges.difficulty.diffMin}}'
-                  max='{{defaultRanges.difficulty.diffMax}}'
+                  :min='defaultRanges.difficulty.min'
+                  :max='defaultRanges.difficulty.max'
                   step='1'
                   v-model='configs.difficulty'
                />
@@ -96,13 +96,6 @@ export default {
 
       const show = ref(false)
 
-      const defaultRanges = ref(
-         {
-            time: { timeMin: 1, timeMax: 15, medium: 7 },
-            difficulty: { diffMin: 1, diffMax: 10, medium: 5 },
-         },
-      )
-
       const operators = ref([
          { id: 1, isChecked: false, name: 'Суммирование', sign: '+' },
          { id: 2, isChecked: false, name: 'Разность', sign: '-' },
@@ -116,9 +109,16 @@ export default {
          },
       ])
 
+      const defaultRanges = ref(
+         {
+            time: { min: 1, max: 15 },
+            difficulty: { min: 1, max: 10 },
+         },
+      )
+
       const configs = ref({
-         difficulty: '5',
-         time: '7',
+         difficulty: Math.trunc(defaultRanges.value.difficulty.max / 2),
+         time: Math.trunc(defaultRanges.value.time.max / 2),
          selectedOperators: [],
       })
 

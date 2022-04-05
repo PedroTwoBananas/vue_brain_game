@@ -1,7 +1,7 @@
 import { getRandomNum } from '@/components/utils/getRundomNum'
 import uniqid from 'uniqid'
 
-export class Exp {
+export class Expression {
    constructor(configs) {
       this.configs = configs
       this.minNum = 1
@@ -9,29 +9,36 @@ export class Exp {
    }
 
    addNumber = (exp, isHidden, id) => {
-      return exp.push(
-         {
+      const number = getRandomNum(this.minNum, this.maxNum)
+      const createNumSign = (inputValue) => {
+         return {
             type: 'number',
-            value: getRandomNum(this.minNum, this.maxNum),
+            value: number,
+            inputValue: inputValue,
             hidden: isHidden,
             id: id,
-         },
-      )
+         }
+      }
+      isHidden ? exp.push(createNumSign('')) : exp.push(createNumSign(number))
    }
 
    addOperator = (exp, configs, id) => {
+      const operator = configs[getRandomNum(0, configs.length - 1)]
       return exp.push({
          type: 'operator',
-         value: configs[getRandomNum(0, configs.length - 1)],
+         value: operator,
+         inputValue: operator,
          hidden: false,
          id: id,
       })
    }
 
    addSolution = (exp, fullExp, id) => {
+      const solution = eval(fullExp)
       return exp.push({
          type: 'total',
-         value: eval(fullExp),
+         value: solution,
+         inputValue: solution,
          hidden: false,
          id: id,
       })
