@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Main from '@/components/pages/Main'
-import NewGame from '@/components/gamePage/NewGame'
+import NewGame from '@/components/pages/NewGame'
 const routes = [
    {
       name: 'main',

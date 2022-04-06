@@ -92,7 +92,6 @@ export default {
    components: { Modal },
    setup() {
       const store = useStore()
-
       const router = useRouter()
 
       const show = ref(false)
@@ -113,21 +112,17 @@ export default {
       store.dispatch('loadConfigs')
       const configs = computed(() => store.state.configs)
 
-
       const expressions = computed(() => store.state.statistics)
-
       const solvedExpressions = computed(
          () =>
             expressions.value.filter((expression) => expression.isSolved).length,
       )
-
       const percent = computed(() =>
          Math.trunc((solvedExpressions.value * 100) / expressions.value.length),
       )
 
       const playGame = () => {
          if (configs.value.selectedOperators.length > 0) {
-
             store.dispatch('addGameConfigs', configs.value)
             router.push({ name: 'game' })
          } else show.value = true

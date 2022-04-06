@@ -31,7 +31,7 @@
 import ExpressionBlock from '@/components/gamePage/ExpressionBlock'
 import KeyBoard from '@/components/gamePage/KeyBoard'
 import Timer from '@/components/gamePage/Timer'
-import { reactive, ref, watchEffect } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { goToMain } from '@/components/utils/goToMain'
@@ -54,30 +54,26 @@ export default {
       }
 
       const store = useStore()
-      const router = useRouter()
 
+      const router = useRouter()
       const toMain = () => {
          goToMain(router)
       }
 
       const expressionSetup = ref(null)
-
       generateNewExpression()
 
       const inputsHtml = ref([])
-
       const setInputs = (arr) => {
          inputsHtml.value = arr
       }
 
-      const currentInput = ref(0)
-
       const isBlockedTime = ref(false)
-
       const toggleTimer = () => {
          isBlockedTime.value = !isBlockedTime.value
       }
 
+      const currentInput = ref(0)
       const selectInput = (id) => {
          currentInput.value = id
       }
@@ -176,7 +172,7 @@ export default {
    height: 40px;
    background-color: white;
    border: none;
-   box-shadow: 0px 2px 3px grey;
+   box-shadow: 0 2px 3px grey;
    color: grey;
 }
 </style>
