@@ -1,3 +1,4 @@
+import { ConfigsInterface } from '@/components/interfaces/ConfigsInterface'
 
 export const defaultRanges =
    {
@@ -5,9 +6,9 @@ export const defaultRanges =
       difficulty: { min: 1, max: 10 },
    }
 
-export const defaultConfigs = {
+export const defaultConfigs: ConfigsInterface = {
    entrances: 0,
-   difficulty: Math.trunc(defaultRanges.difficulty.max / 2),
-   time: Math.trunc(defaultRanges.time.max / 2),
+   difficulty: (Math.trunc(defaultRanges.difficulty.max / 2)).toString(),
+   time: (Math.trunc(defaultRanges.time.max / 2)).toString(),
    selectedOperators: ['+'],
 }
