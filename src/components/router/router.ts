@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory,  } from 'vue-router'
 import Main from '@/components/pages/Main.vue'
 import NewGame from '@/components/pages/NewGame.vue'
 const routes = [

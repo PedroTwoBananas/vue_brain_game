@@ -1,7 +1,7 @@
 import { ExpressionInterface } from '@/components/interfaces/ExpressionInterface'
 
 class LocalStorage {
-   addToStatistics(data: ExpressionInterface) {
+   addToStatistics(data: ExpressionInterface[]) {
       return localStorage.setItem('statistics', JSON.stringify(data))
    }
 

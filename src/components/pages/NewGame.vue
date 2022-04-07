@@ -33,7 +33,7 @@
 import ExpressionBlock from '@/components/gamePage/ExpressionBlock.vue'
 import KeyBoard from '@/components/gamePage/KeyBoard.vue'
 import Timer from '@/components/gamePage/Timer.vue'
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { goToMain } from '@/components/utils/goToMain'
@@ -41,7 +41,6 @@ import { getLeftIdentity } from '../utils/getLeftIdentity'
 import { getUserLeftIdentity } from '../utils/getLeftIdentity'
 import { focusInput } from '../utils/focusInput'
 import { Expression } from '@/components/utils/expression'
-import { defineComponent } from 'vue'
 import { ExpressionInterface } from '@/components/interfaces/ExpressionInterface'
 
 export default defineComponent({

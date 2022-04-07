@@ -10,55 +10,54 @@ interface GameState {
    statistics: ExpressionInterface[]
 }
 
-export const store = createStore({
-   state(): GameState {
-      return {
-         configs: null,
-         statistics: [],
-      }
+export const store = createStore<GameState>({
+   state: {
+      configs: null,
+      statistics: [],
    },
 
    mutations: {
-      LOAD_STATISTICS: (state: GameState, payload) => {
+      LOAD_STATISTICS: (state, payload: ExpressionInterface[]) => {
          state.statistics = payload
       },
 
-      LOAD_CONFIGS: (state: GameState, payload) => {
+      LOAD_CONFIGS: (state, payload: ConfigsInterface) => {
          state.configs = payload
          if (!state.configs) return
          state.configs.entrances++
       },
 
-      ADD_GAME_CONFIGS: (state: GameState, payload) => {
+      ADD_GAME_CONFIGS: (state, payload: ConfigsInterface) => {
          state.configs = payload
          state.statistics = []
       },
 
-      ADD_TO_STATISTICS: (state: GameState, payload: ExpressionInterface) => {
+      ADD_TO_STATISTICS: (state, payload: ExpressionInterface) => {
          state.statistics.push(payload)
       },
    },
 
    actions: {
       loadStatistics: (context) => {
-         const statistic = StatisticsStore.loadStatistics() || []
+         const statistic: ExpressionInterface[] =
+            StatisticsStore.loadStatistics() || []
          context.commit('LOAD_STATISTICS', statistic)
       },
 
       loadConfigs: (context) => {
-         const configs = ConfigsStore.loadConfigs() || defaultConfigs
+         const configs: ConfigsInterface =
+            ConfigsStore.loadConfigs() || defaultConfigs
          context.commit('LOAD_CONFIGS', configs)
       },
 
-      addGameConfigs: (context, payload) => {
+      addGameConfigs: (context, payload: ConfigsInterface) => {
          context.commit('ADD_GAME_CONFIGS', payload)
          ConfigsStore.addConfigs(payload)
          StatisticsStore.removeStatistics()
       },
 
-      addToStatistics: (context, payload) => {
+      addToStatistics: (context, payload: ExpressionInterface) => {
          context.commit('ADD_TO_STATISTICS', payload)
-         // @ts-ignore
          StatisticsStore.addToStatistics(context.state.statistics)
       },
    },
