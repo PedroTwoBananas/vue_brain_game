@@ -1,35 +1,35 @@
 <template>
-   <div class='expression'>
+   <div class="expression">
       <div
-         class='expression-sign'
-         v-for='sign in generatedExpression'
-         :key='sign.id'
+         class="expression-sign"
+         v-for="sign in generatedExpression"
+         :key="sign.id"
       >
          <span v-if="!sign.hidden && sign.type !== 'total'">
             {{ sign.inputValue }}
          </span>
          <input
             @click="$emit('selectInput', sign.id)"
-            class='sign-input'
-            :id='sign.id'
-            type='number'
-            :ref='(el) => (inputs[sign.id] = el)'
-            v-model='sign.inputValue'
-            v-if='sign.hidden'
+            class="sign-input"
+            :id="sign.id"
+            type="number"
+            :ref="(el) => (inputs[sign.id] = el)"
+            v-model="sign.inputValue"
+            v-if="sign.hidden"
          />
          <span v-if="sign.type === 'total'">= {{ sign.inputValue }}?</span>
       </div>
    </div>
 </template>
 
-<script>
-import { onMounted } from 'vue'
-import { ref } from 'vue'
+<script lang="ts">
+import { defineComponent, onMounted, ref } from 'vue'
 
-export default {
+export default defineComponent({
+   name: 'ExpressionBlock',
    props: { generatedExpression: Array },
    setup(props, context) {
-      const inputs = ref([])
+      const inputs = ref<HTMLInputElement[] | []>([])
 
       onMounted(() => {
          context.emit('setInputs', inputs.value)
@@ -37,7 +37,7 @@ export default {
 
       return { inputs }
    },
-}
+})
 </script>
 
 <style scoped>

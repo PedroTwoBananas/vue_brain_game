@@ -1,102 +1,112 @@
 <template>
-   <div class='main-section'>
-      <div class='main-wrapper'>
-         <div class='greetings-block'>
-            <div class='greeting-hello-block'>
-               <span class='greeting-hello-text'>Привет!</span>
+   <div class="main-section">
+      <div class="main-wrapper">
+         <div class="greetings-block">
+            <div class="greeting-hello-block">
+               <span class="greeting-hello-text">Привет!</span>
             </div>
-            <p class='greetings-description'>
-               Добро пожаловать на {{ configs.entrances }} тренировочный день. Ваш последний
-               результат -
-               {{ solvedExpressions }} из {{ expressions.length }}. <br />
+            <p class="greetings-description">
+               Добро пожаловать на {{ configs.entrances }} тренировочный день.
+               Ваш последний результат - {{ solvedExpressions }} из
+               {{ expressions.length }}. <br />
                Общая точность {{ percent || 0 }}%.
             </p>
          </div>
-         <div class='options-block'>
-            <div class='options-title-block'>
-               <span class='options-title-text'>Настройки</span>
+         <div class="options-block">
+            <div class="options-title-block">
+               <span class="options-title-text">Настройки</span>
             </div>
-            <div class='options-input-block'>
-               <div class='options-labels'>
+            <div class="options-input-block">
+               <div class="options-labels">
                   <label>{{ defaultRanges.time.min }}</label>
                   <label>{{ defaultRanges.time.max }}</label>
                </div>
                <input
-                  class='options-input-range'
-                  type='range'
-
-                  :min='defaultRanges.time.min'
-                  :max='defaultRanges.time.max'
-                  step='1'
-                  v-model='configs.time'
+                  class="options-input-range"
+                  type="range"
+                  :min="defaultRanges.time.min"
+                  :max="defaultRanges.time.max"
+                  step="1"
+                  v-model="configs.time"
                />
-               <span class='options-input-title'>
+               <span class="options-input-title">
                   Длительность {{ configs.time }} минут
                </span>
             </div>
-            <div class='options-input-block'>
-               <div class='options-labels'>
+            <div class="options-input-block">
+               <div class="options-labels">
                   <label>{{ defaultRanges.difficulty.min }}</label>
                   <label>{{ defaultRanges.difficulty.max }}</label>
                </div>
                <input
-                  class='options-input-range'
-                  type='range'
-                  :min='defaultRanges.difficulty.min'
-                  :max='defaultRanges.difficulty.max'
-                  step='1'
-                  v-model='configs.difficulty'
+                  class="options-input-range"
+                  type="range"
+                  :min="defaultRanges.difficulty.min"
+                  :max="defaultRanges.difficulty.max"
+                  step="1"
+                  v-model="configs.difficulty"
                />
-               <span class='options-input-title'>
+               <span class="options-input-title">
                   Сложность {{ configs.difficulty }}
                </span>
             </div>
          </div>
-         <div class='options-operators-block'>
+         <div class="options-operators-block">
             <div
-               class='options-operator'
-               v-for='operator in operators'
-               :key='operator.id'
+               class="options-operator"
+               v-for="operator in operators"
+               :key="operator.id"
             >
                <label>
                   <input
-                     class='options-operator-checkbox'
-                     type='checkbox'
-                     :value='operator.sign'
-                     v-model='configs.selectedOperators'
+                     class="options-operator-checkbox"
+                     type="checkbox"
+                     :value="operator.sign"
+                     v-model="configs.selectedOperators"
                   />
-                  <span class='options-operator-title'>
+                  <span class="options-operator-title">
                      {{ operator.name }}
                   </span>
                </label>
             </div>
          </div>
-         <div class='run-game-block'>
-            <button class='run-game-button' @click='playGame'>Play!</button>
+         <div class="run-game-block">
+            <button class="run-game-button" @click="playGame">Play!</button>
          </div>
-         <teleport to='body' v-if='show'>
-            <Modal @ok='closeModal'>Выберите минимум один оператор!</Modal>
-         </teleport>
+         <Modal v-if="show" @ok="closeModal"
+            >Выберите минимум один оператор!
+         </Modal>
       </div>
    </div>
 </template>
 
-<script>
+<script lang="ts">
 import { computed, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
-import Modal from '@/components/Modal'
+import Modal from '@/components/Modal.vue'
 import { defaultRanges } from '@/components/data/configs'
+import { defineComponent } from 'vue'
+import { ConfigsInterface } from '@/components/interfaces/ConfigsInterface'
+import { ExpressionInterface } from '../interfaces/ExpressionInterface'
 
-export default {
+interface OperatorInterface {
+   id: number
+   isChecked: boolean
+   name: string
+   sign: string
+}
+
+export default defineComponent({
+   name: 'Main',
    components: { Modal },
    setup() {
       const store = useStore()
       const router = useRouter()
 
-      const show = ref(false)
+      const show = ref<boolean>(false)
 
-      const operators = ref([
+      const operators = ref<OperatorInterface[]>([
          { id: 1, isChecked: false, name: 'Суммирование', sign: '+' },
          { id: 2, isChecked: false, name: 'Разность', sign: '-' },
          { id: 3, isChecked: false, name: 'Умножение', sign: '*' },
@@ -110,15 +120,17 @@ export default {
       ])
 
       store.dispatch('loadConfigs')
-      const configs = computed(() => store.state.configs)
+      const configs = computed<ConfigsInterface>(() => store.state.configs)
 
-      const expressions = computed(() => store.state.statistics)
-      const solvedExpressions = computed(
-         () =>
-            expressions.value.filter((expression) => expression.isSolved).length,
+      const expressions = computed<ExpressionInterface[]>(
+         () => store.state.statistics
       )
-      const percent = computed(() =>
-         Math.trunc((solvedExpressions.value * 100) / expressions.value.length),
+      const solvedExpressions = computed<number>(
+         () =>
+            expressions.value.filter((expression) => expression.isSolved).length
+      )
+      const percent = computed<number>(() =>
+         Math.trunc((solvedExpressions.value * 100) / expressions.value.length)
       )
 
       const playGame = () => {
@@ -148,7 +160,7 @@ export default {
          solvedExpressions,
       }
    },
-}
+})
 </script>
 
 <style scoped>

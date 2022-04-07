@@ -1,36 +1,38 @@
 <template>
-   <div class='game'>
-      <div class='game-wrapper'>
-         <div class='header-game-section'>
-            <button @click='toMain' class='go-to-main-button'>
+   <div class="game">
+      <div class="game-wrapper">
+         <div class="header-game-section">
+            <button @click="toMain" class="go-to-main-button">
                &#10006; ОТМЕНА
             </button>
-            <Timer :isBlockedTime='isBlockedTime' />
+            <Timer :isBlockedTime="isBlockedTime" />
          </div>
          <ExpressionBlock
-            :generatedExpression='expressionSetup.generatedExpression.expression'
-            @selectInput='selectInput'
-            @setInputs='setInputs'
+            :generatedExpression="
+               expressionSetup.generatedExpression.expression
+            "
+            @selectInput="selectInput"
+            @setInputs="setInputs"
          />
          <KeyBoard
-            :generatedExpression='expressionSetup.generatedExpression'
-            :leftIdentity='expressionSetup.leftIdentity'
-            @clickNum='clickNum'
-            @next='next'
-            @prev='prev'
-            @toggleTimer='toggleTimer'
-            @checkSolution='checkSolution'
-            @generateExpression='generateExpression'
-            :isBlockedTime='isBlockedTime'
+            :generatedExpression="expressionSetup.generatedExpression"
+            :leftIdentity="expressionSetup.leftIdentity"
+            @clickNum="clickNum"
+            @next="next"
+            @prev="prev"
+            @toggleTimer="toggleTimer"
+            @checkSolution="checkSolution"
+            @generateExpression="generateExpression"
+            :isBlockedTime="isBlockedTime"
          />
       </div>
    </div>
 </template>
 
-<script>
-import ExpressionBlock from '@/components/gamePage/ExpressionBlock'
-import KeyBoard from '@/components/gamePage/KeyBoard'
-import Timer from '@/components/gamePage/Timer'
+<script lang="ts">
+import ExpressionBlock from '@/components/gamePage/ExpressionBlock.vue'
+import KeyBoard from '@/components/gamePage/KeyBoard.vue'
+import Timer from '@/components/gamePage/Timer.vue'
 import { ref, watchEffect } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
@@ -39,42 +41,47 @@ import { getLeftIdentity } from '../utils/getLeftIdentity'
 import { getUserLeftIdentity } from '../utils/getLeftIdentity'
 import { focusInput } from '../utils/focusInput'
 import { Expression } from '@/components/utils/expression'
+import { defineComponent } from 'vue'
+import { ExpressionInterface } from '@/components/interfaces/ExpressionInterface'
 
-export default {
-   components: { KeyBoard, ExpressionBlock, Timer },
+export default defineComponent({
+   name: 'NewGame',
+   components: { KeyBoard, Timer, ExpressionBlock },
    setup() {
+      const store = useStore()
+      const router = useRouter()
+      const toMain = () => {
+         goToMain(router)
+      }
+
+      const expression = new Expression(store.state.configs)
 
       function generateNewExpression() {
-         const newExpression = new Expression(store.state.configs).generateExpression()
-
+         const newExpression = expression.generateExpression()
          expressionSetup.value = {
             generatedExpression: { expression: newExpression, isSolved: false },
             leftIdentity: getLeftIdentity(newExpression),
          }
       }
 
-      const store = useStore()
-
-      const router = useRouter()
-      const toMain = () => {
-         goToMain(router)
-      }
-
-      const expressionSetup = ref(null)
+      const expressionSetup = ref<{
+         generatedExpression: ExpressionInterface
+         leftIdentity: string
+      } | null>(null)
       generateNewExpression()
 
-      const inputsHtml = ref([])
-      const setInputs = (arr) => {
+      const inputsHtml = ref<HTMLInputElement[] | []>([])
+      const setInputs = (arr: HTMLInputElement[]) => {
          inputsHtml.value = arr
       }
 
-      const isBlockedTime = ref(false)
+      const isBlockedTime = ref<boolean>(false)
       const toggleTimer = () => {
          isBlockedTime.value = !isBlockedTime.value
       }
 
-      const currentInput = ref(0)
-      const selectInput = (id) => {
+      const currentInput = ref<number>(0)
+      const selectInput = (id: number) => {
          currentInput.value = id
       }
 
@@ -90,25 +97,37 @@ export default {
          focusInput(currentInput.value, inputsHtml.value)
       }
 
-      const clickNum = (num) => {
-         expressionSetup.value.generatedExpression.expression.forEach((sign) => {
-            if (sign.id === currentInput.value) {
-               sign.inputValue = sign.inputValue + '' + num
+      const clickNum = (num: string) => {
+         if (expressionSetup.value === null) return
+         expressionSetup.value.generatedExpression.expression.forEach(
+            (sign) => {
+               if (sign.id === currentInput.value) {
+                  sign.inputValue = sign.inputValue + '' + num
+               }
             }
-         })
+         )
          focusInput(currentInput.value, inputsHtml.value)
       }
 
       const checkSolution = () => {
-         const solution = expressionSetup.value.generatedExpression.expression.find(
-            (sign) => sign.type === 'total',
-         ).value
-         const userSolution = eval(getUserLeftIdentity(expressionSetup.value.generatedExpression.expression))
+         if (expressionSetup.value === null) return
+         const solution =
+            expressionSetup.value.generatedExpression.expression[
+               expressionSetup.value.generatedExpression.expression.length - 1
+            ]
+         const userSolution = eval(
+            getUserLeftIdentity(
+               expressionSetup.value.generatedExpression.expression
+            )
+         )
 
          if (userSolution === solution) {
             expressionSetup.value.generatedExpression.isSolved = true
          }
-         store.dispatch('addToStatistics', expressionSetup.value.generatedExpression)
+         store.dispatch(
+            'addToStatistics',
+            expressionSetup.value.generatedExpression
+         )
 
          currentInput.value = 0
       }
@@ -123,7 +142,7 @@ export default {
             if (inputsHtml.value.length === 0) return
             inputsHtml.value[currentInput.value].focus()
          },
-         { flush: 'post' },
+         { flush: 'post' }
       )
 
       return {
@@ -142,7 +161,7 @@ export default {
          toMain,
       }
    },
-}
+})
 </script>
 
 <style scoped>

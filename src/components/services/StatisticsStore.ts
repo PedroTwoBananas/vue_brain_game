@@ -1,10 +1,13 @@
+import { ExpressionInterface } from '@/components/interfaces/ExpressionInterface'
+
 class LocalStorage {
-   addToStatistics(data) {
+   addToStatistics(data: ExpressionInterface) {
       return localStorage.setItem('statistics', JSON.stringify(data))
    }
 
    loadStatistics() {
-      return JSON.parse(localStorage.getItem('statistics'))
+      const value = localStorage.getItem('statistics')
+      if (value) return JSON.parse(value)
    }
 
    removeStatistics() {

@@ -1,6 +1,6 @@
-export const focusInput = (inputNum, inputs) => {
+export const focusInput = (inputNum: number, inputs: HTMLInputElement[]) => {
    return inputs.map((input) => {
-      if (input.id == inputNum) {
+      if (+input.id === inputNum) {
          input.focus()
       }
    })

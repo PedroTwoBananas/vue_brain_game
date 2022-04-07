@@ -1,16 +1,9 @@
 import { getRandomNum } from '@/components/utils/getRundomNum'
 import uniqid from 'uniqid'
 import { ConfigsInterface } from '@/components/interfaces/ConfigsInterface'
+import { SignInterface } from '@/components/interfaces/SignInterface'
 
-interface SignInterface {
-   type: string
-   value: string
-   inputValue: string
-   hidden: boolean
-   id: number | string
-}
-
-export class Expression{
+export class Expression {
    minNum: number
    maxNum: number
    configs: ConfigsInterface
@@ -22,7 +15,7 @@ export class Expression{
    }
 
    addNumber(exp: SignInterface[], isHidden: boolean, id: string | number) {
-      const number = (getRandomNum(this.minNum, this.maxNum)).toString()
+      const number = getRandomNum(this.minNum, this.maxNum).toString()
       const createNumSign = (inputValue: string) => {
          return {
             type: 'number',
@@ -35,7 +28,11 @@ export class Expression{
       isHidden ? exp.push(createNumSign('')) : exp.push(createNumSign(number))
    }
 
-   addOperator = (exp: SignInterface[], configs: string[], id: string | number) => {
+   addOperator = (
+      exp: SignInterface[],
+      configs: string[],
+      id: string | number
+   ) => {
       const operator = configs[getRandomNum(0, configs.length - 1)]
       exp.push({
          type: 'operator',
@@ -46,8 +43,12 @@ export class Expression{
       })
    }
 
-   addSolution = (exp: SignInterface[], fullExp: string, id: string | number) => {
-      const solution = (eval(fullExp)).toString()
+   addSolution = (
+      exp: SignInterface[],
+      fullExp: string,
+      id: string | number
+   ) => {
+      const solution = eval(fullExp).toString()
       exp.push({
          type: 'total',
          value: solution,

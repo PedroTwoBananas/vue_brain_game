@@ -1,3 +1,3 @@
-export const goToMain = (router) => {
-   return router.push({ name: 'main' })
+export const goToMain = (router: any) => {
+   router.push({ name: 'main' })
 }

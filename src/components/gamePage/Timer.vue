@@ -4,14 +4,16 @@
    </div>
 </template>
 
-<script>
-import {formatTimer} from '../utils/mappers/formatTimer'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+<script lang="ts">
+import { formatTimer } from '../utils/mappers/formatTimer'
+import { onBeforeUnmount, onMounted, ref, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { goToMain } from '@/components/utils/goToMain'
 import { Timer } from '@/components/utils/timer'
-export default {
+
+export default defineComponent({
+   name: 'Timer',
    props: {
       isBlockedTime: {
          type: Boolean,
@@ -30,13 +32,13 @@ export default {
       const toMain = () => {
          goToMain(router)
       }
-      const countDownTime = ref(+store.state.configs.time * 60)
+      const countDownTime = ref<number>(store.state.configs.time * 60)
       const timer = new Timer(countDownTime, toMain)
       onMounted(() => timer.start())
       onBeforeUnmount(() => timer.stop())
       return { timer, countDownTime, formatTimer }
    },
-}
+})
 </script>
 
 <style scoped>

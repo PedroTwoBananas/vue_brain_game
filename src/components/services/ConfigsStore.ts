@@ -1,11 +1,13 @@
-class LocalStorage {
+import { ConfigsInterface } from '@/components/interfaces/ConfigsInterface'
 
-   addConfigs(data) {
+class LocalStorage {
+   addConfigs(data: ConfigsInterface) {
       return localStorage.setItem('configs', JSON.stringify(data))
    }
 
    loadConfigs() {
-      return JSON.parse(localStorage.getItem('configs'))
+      const value = localStorage.getItem('configs')
+      if (value) return JSON.parse(value)
    }
 }
 

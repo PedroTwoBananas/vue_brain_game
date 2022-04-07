@@ -1,5 +1,12 @@
+import {Ref} from 'vue'
+
 export class Timer {
-   constructor(countDown, goToMain) {
+   id: any
+   countDown: Ref
+   isRunning: boolean
+   goToMain: any
+
+   constructor(countDown: Ref, goToMain: any) {
       this.id = null
       this.countDown = countDown
       this.isRunning = false

@@ -27,10 +27,12 @@
    </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
 import Modal from '@/components/Modal.vue'
-import { ref } from 'vue'
-export default {
+
+export default defineComponent({
+   name: 'KeyBoard',
    props: {
       isBlockedTime: {
          type: Boolean,
@@ -43,9 +45,9 @@ export default {
       Modal,
    },
    setup(props, context) {
-      const keys = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+      const keys: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 
-      const show = ref({
+      const show = ref<{ showExpression: boolean; showSolution: boolean }>({
          showExpression: false,
          showSolution: false,
       })
@@ -58,7 +60,7 @@ export default {
          context.emit('next')
       }
 
-      const clickNum = (num) => {
+      const clickNum = (num: number) => {
          context.emit('clickNum', num)
       }
 
@@ -90,7 +92,7 @@ export default {
          closeCheckSolution,
       }
    },
-}
+})
 </script>
 
 <style scoped>
