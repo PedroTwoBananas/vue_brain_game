@@ -36,6 +36,7 @@ import Timer from '@/components/gamePage/Timer.vue'
 import { ref, watchEffect, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
+import { key } from '@/components/store'
 import { goToMain } from '@/components/utils/goToMain'
 import { getLeftIdentity } from '../utils/getLeftIdentity'
 import { getUserLeftIdentity } from '../utils/getLeftIdentity'
@@ -47,12 +48,14 @@ export default defineComponent({
    name: 'NewGame',
    components: { KeyBoard, Timer, ExpressionBlock },
    setup() {
-      const store = useStore()
+      const store = useStore(key)
       const router = useRouter()
       const toMain = () => {
          goToMain(router)
       }
-
+      if (!store.state.configs) {
+         return {}
+      }
       const expression = new Expression(store.state.configs)
 
       function generateNewExpression() {
@@ -90,7 +93,7 @@ export default defineComponent({
       }
 
       const next = () => {
-         if (currentInput.value < store.state.configs.difficulty - 1) {
+         if (store.state.configs && currentInput.value < (+store.state.configs.difficulty - 1)) {
             currentInput.value += 1
          }
          focusInput(currentInput.value, inputsHtml.value)
@@ -113,12 +116,14 @@ export default defineComponent({
          const solution =
             expressionSetup.value.generatedExpression.expression[
                expressionSetup.value.generatedExpression.expression.length - 1
-            ]
+            ].value
+         console.log(typeof solution)
          const userSolution = eval(
             getUserLeftIdentity(
                expressionSetup.value.generatedExpression.expression
             )
-         )
+         ).toString()
+         console.log(typeof userSolution)
 
          if (userSolution === solution) {
             expressionSetup.value.generatedExpression.isSolved = true

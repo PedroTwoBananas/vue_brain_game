@@ -1,14 +1,17 @@
-import { createStore } from 'vuex'
+import { createStore, Store } from 'vuex'
 import { StatisticsStore } from '../services/StatisticsStore'
 import { ConfigsStore } from '@/components/services/ConfigsStore'
 import { defaultConfigs } from '@/components/data/configs'
 import { ConfigsInterface } from '@/components/interfaces/ConfigsInterface'
 import { ExpressionInterface } from '@/components/interfaces/ExpressionInterface'
+import {InjectionKey} from 'vue'
 
-interface GameState {
+export interface GameState {
    configs: ConfigsInterface | null
    statistics: ExpressionInterface[]
 }
+
+export const key: InjectionKey<Store<GameState>> = Symbol()
 
 export const store = createStore<GameState>({
    state: {
@@ -62,3 +65,4 @@ export const store = createStore<GameState>({
       },
    },
 })
+

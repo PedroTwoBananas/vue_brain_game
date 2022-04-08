@@ -1,5 +1,5 @@
 export interface SignInterface {
-   type: string
+   type: 'number' | 'operator' | 'total'
    value: string
    inputValue: string
    hidden: boolean

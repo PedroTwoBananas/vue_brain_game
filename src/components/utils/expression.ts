@@ -16,7 +16,7 @@ export class Expression {
 
    addNumber(exp: SignInterface[], isHidden: boolean, id: string | number) {
       const number = getRandomNum(this.minNum, this.maxNum).toString()
-      const createNumSign = (inputValue: string) => {
+      const createNumSign = (inputValue: string): SignInterface => {
          return {
             type: 'number',
             value: number,

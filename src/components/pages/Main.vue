@@ -81,14 +81,12 @@
 </template>
 
 <script lang="ts">
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, defineComponent } from 'vue'
 import { useStore } from 'vuex'
+import {key} from '@/components/store'
 import { useRouter } from 'vue-router'
 import Modal from '@/components/Modal.vue'
 import { defaultRanges } from '@/components/data/configs'
-import { defineComponent } from 'vue'
-import { ConfigsInterface } from '@/components/interfaces/ConfigsInterface'
-import { ExpressionInterface } from '../interfaces/ExpressionInterface'
 
 interface OperatorInterface {
    id: number
@@ -101,7 +99,7 @@ export default defineComponent({
    name: 'Main',
    components: { Modal },
    setup() {
-      const store = useStore()
+      const store = useStore(key)
       const router = useRouter()
 
       const show = ref<boolean>(false)
@@ -120,9 +118,10 @@ export default defineComponent({
       ])
 
       store.dispatch('loadConfigs')
-      const configs = computed<ConfigsInterface>(() => store.state.configs)
 
-      const expressions = computed<ExpressionInterface[]>(
+      const configs = computed(() => store.state.configs)
+
+      const expressions = computed(
          () => store.state.statistics
       )
       const solvedExpressions = computed<number>(
@@ -134,7 +133,7 @@ export default defineComponent({
       )
 
       const playGame = () => {
-         if (configs.value.selectedOperators.length > 0) {
+         if (configs.value && configs.value.selectedOperators.length > 0) {
             store.dispatch('addGameConfigs', configs.value)
             router.push({ name: 'game' })
          } else show.value = true
