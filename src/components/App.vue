@@ -1,5 +1,13 @@
 <template>
-   <h1>Привет!</h1>
+   <router-view />
 </template>
+
+<script>
+export default {
+   mounted() {
+      this.$router.push({ name: 'main' })
+   },
+}
+</script>
 
 <style></style>
